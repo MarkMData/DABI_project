@@ -148,3 +148,27 @@ ggplot(data=total_transaction, aes(log(total_transactions)))+
 # plot number of each time frame appears in transcript
 ggplot(data=transcript, aes(time))+
       geom_histogram()
+
+# create vector number of transactions per individual (people with zero transactions dropped)
+number_transaction<-transcript %>% 
+      select(person_id,amount) %>% 
+      drop_na() %>% 
+      group_by(person_id) %>% 
+      count()
+
+# number of offers received per person
+offers_received <- transcript %>% 
+      select(person_id, offer_received) %>% 
+      filter(offer_received==1) %>% 
+      group_by(person_id) %>% 
+      count()
+offers_received
+
+# merge no. of transactions with offers received
+data<-merge(number_transaction,offers_received, by="person_id")
+# boxplot of transactions and  offers received
+ggplot(data=data, aes(y=n.x))+
+      geom_boxplot(aes(fill=factor(n.y)))+
+      xlab("offers received")+
+      ylab("no. of transactions")
+
