@@ -255,10 +255,9 @@ monetary_value <- transcript_profile %>%
 
 # total frequency column for every person
 number_transaction<-transcript_profile %>% 
-      select(person_id,amount) %>% 
-      drop_na() %>% 
+      select(person_id,transaction) %>% 
       group_by(person_id) %>% 
-      count()
+      summarise(sum(transaction))
 
 number_transaction
 
@@ -268,4 +267,4 @@ recency <- transcript_profile %>%
       filter(transaction==1) %>% 
       group_by(person_id) %>% 
       summarise(recency=max(time))
-      
+recency      
