@@ -261,3 +261,11 @@ number_transaction<-transcript_profile %>%
       count()
 
 number_transaction
+
+# recency column
+recency <- transcript_profile %>% 
+      select(person_id,time, transaction) %>%
+      filter(transaction==1) %>% 
+      group_by(person_id) %>% 
+      summarise(recency=max(time))
+      
