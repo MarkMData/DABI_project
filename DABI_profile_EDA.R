@@ -107,4 +107,8 @@ ggpairs(profile, columns = c('age', 'income', 'tenure', 'total_spend',
         aes(color = gender, alpha = 0.5))+
   theme_classic()
 
+###### TRANSCRIPT ANALYSIS ######
 
+# summary of transcript
+summary(transcript)
+str(transcript)
