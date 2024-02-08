@@ -244,3 +244,13 @@ transcript_profile<-merge(transcript, profile, by.x="person_id", by.y="id")
 
 dim(transcript)
 dim(transcript_profile)
+
+# total monetary value column for every person
+colnames(transcript_profile)
+
+monetary_value <- transcript_profile %>% 
+      group_by(person_id) %>% 
+      slice(1) %>% 
+      select(total_spend)
+
+# total frequency column for every person
