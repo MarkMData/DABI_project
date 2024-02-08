@@ -254,3 +254,10 @@ monetary_value <- transcript_profile %>%
       select(total_spend)
 
 # total frequency column for every person
+number_transaction<-transcript_profile %>% 
+      select(person_id,amount) %>% 
+      drop_na() %>% 
+      group_by(person_id) %>% 
+      count()
+
+number_transaction
