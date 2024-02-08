@@ -193,3 +193,45 @@ ggplot(data=offer_count, aes(ov_perc, oc_perc))+
 # merge offer count with portfolio
 offer_count<-merge(offer_count, portfolio, by.x="offer_id", by.y="id")
 offer_count
+
+# offers viewed and completed comparison bogo
+ggplot(data=offer_count, aes(ov_perc, oc_perc, col=factor(bogo)))+
+      geom_point(size=3)+
+      geom_abline(slope=1,intercept=0)+
+      xlim(c(0,1))+
+      ylim(c(0,1))
+
+# offers viewed and completed comparison discount
+ggplot(data=offer_count, aes(ov_perc, oc_perc, col=factor(discount)))+
+      geom_point(size=3)+
+      geom_abline(slope=1,intercept=0)+
+      xlim(c(0,1))+
+      ylim(c(0,1))
+
+# offers viewed and completed comparison information
+ggplot(data=offer_count, aes(ov_perc, oc_perc, col=factor(informational)))+
+      geom_point(size=3)+
+      geom_abline(slope=1,intercept=0)+
+      xlim(c(0,1))+
+      ylim(c(0,1))
+
+# offers viewed and completed comparison difficulty
+ggplot(data=offer_count, aes(ov_perc, oc_perc, col=factor(difficulty)))+
+      geom_point(size=3)+
+      geom_abline(slope=1,intercept=0)+
+      xlim(c(0,1))+
+      ylim(c(0,1))
+
+# offers viewed and completed comparison reward
+ggplot(data=offer_count, aes(ov_perc, oc_perc, col=factor(reward)))+
+      geom_point(size=3)+
+      geom_abline(slope=1,intercept=0)+
+      xlim(c(0,1))+
+      ylim(c(0,1))
+
+# offers viewed and completed comparison reward
+ggplot(data=offer_count, aes(ov_perc, oc_perc, col=factor(difficulty-reward)))+
+      geom_point(size=3)+
+      geom_abline(slope=1,intercept=0)+
+      xlim(c(0,1))+
+      ylim(c(0,1))
