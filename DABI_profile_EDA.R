@@ -107,4 +107,4 @@ ggpairs(profile, columns = c('age', 'income', 'tenure', 'total_spend',
         aes(color = gender, alpha = 0.5))+
   theme_classic()
 
-
+# happy days
