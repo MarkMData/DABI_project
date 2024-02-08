@@ -3,7 +3,7 @@ library(magrittr)
 library(GGally)
 
 profile <- read.csv('profile.csv')
-portolio <- read.csv('portfolio.csv')
+portfolio <- read.csv('portfolio.csv')
 transcript <- read.csv('transcript.csv')
 
 ######### Looking at transaction amounts ########
@@ -181,7 +181,8 @@ offer_count<-transcript %>%
       mutate(ov_perc=ov_count/or_count, oc_perc=oc_count/or_count)
 offer_count
 
-# # percentage offer viewed and ofeer completed
+
+# # percentage offer viewed and offer completed
 ggplot(data=offer_count, aes(ov_perc, oc_perc))+
       geom_point()+
       geom_abline(slope=1,intercept=0)+
