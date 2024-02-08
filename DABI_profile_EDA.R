@@ -182,9 +182,14 @@ offer_count<-transcript %>%
 offer_count
 
 
+
 # # percentage offer viewed and offer completed
 ggplot(data=offer_count, aes(ov_perc, oc_perc))+
       geom_point()+
       geom_abline(slope=1,intercept=0)+
       xlim(c(0,1))+
       ylim(c(0,1))
+
+# merge offer count with portfolio
+offer_count<-merge(offer_count, portfolio, by.x="offer_id", by.y="id")
+offer_count
