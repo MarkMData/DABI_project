@@ -235,3 +235,12 @@ ggplot(data=offer_count, aes(ov_perc, oc_perc, col=factor(difficulty-reward)))+
       geom_abline(slope=1,intercept=0)+
       xlim(c(0,1))+
       ylim(c(0,1))
+
+
+#######  RFM  #########
+
+# merge transcript and profile with inner join to remove people aged 118
+transcript_profile<-merge(transcript, profile, by.x="person_id", by.y="id")
+
+dim(transcript)
+dim(transcript_profile)
