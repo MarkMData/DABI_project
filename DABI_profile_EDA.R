@@ -143,3 +143,8 @@ ggplot(data=total_transaction, aes(total_transactions))+
 # plot total amount per individual on log scale
 ggplot(data=total_transaction, aes(log(total_transactions)))+
       geom_histogram(bins=100)
+
+
+# plot number of each time frame appears in transcript
+ggplot(data=transcript, aes(time))+
+      geom_histogram()
