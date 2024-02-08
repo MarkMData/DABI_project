@@ -112,3 +112,18 @@ ggpairs(profile, columns = c('age', 'income', 'tenure', 'total_spend',
 # summary of transcript
 summary(transcript)
 str(transcript)
+
+# create average amount per individual
+average_transaction<-transcript %>% 
+      select(person_id,amount) %>% 
+      group_by(person_id) %>% 
+      summarise(mean_transaction=mean(amount, na.rm = TRUE)) %>% 
+      arrange(desc(mean_transaction))
+
+# plot hist average amount per individual
+ggplot(data=average_transaction, aes(mean_transaction))+
+      geom_histogram(bins=100)
+
+ggplot(data=average_transaction, aes(mean_transaction))+
+      geom_histogram(bins=100)+
+      xlim(c(0,50))
