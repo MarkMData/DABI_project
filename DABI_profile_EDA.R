@@ -172,3 +172,18 @@ ggplot(data=data, aes(y=n.x))+
       xlab("offers received")+
       ylab("no. of transactions")
 
+# dataframe of offer viewed and offer completed
+offer_count<-transcript %>% 
+      filter(offer_id != "") %>% 
+      select(offer_id, offer_received, offer_viewed, offer_completed) %>% 
+      group_by(offer_id) %>% 
+      summarise(or_count=sum(offer_received),ov_count=sum(offer_viewed),oc_count=sum(offer_completed)) %>% 
+      mutate(ov_perc=ov_count/or_count, oc_perc=oc_count/or_count)
+offer_count
+
+# # percentage offer viewed and ofeer completed
+ggplot(data=offer_count, aes(ov_perc, oc_perc))+
+      geom_point()+
+      geom_abline(slope=1,intercept=0)+
+      xlim(c(0,1))+
+      ylim(c(0,1))
