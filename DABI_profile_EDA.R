@@ -127,3 +127,19 @@ ggplot(data=average_transaction, aes(mean_transaction))+
 ggplot(data=average_transaction, aes(mean_transaction))+
       geom_histogram(bins=100)+
       xlim(c(0,50))
+
+
+# create vector total amount per person
+total_transaction<-transcript %>% 
+      select(person_id,amount) %>% 
+      group_by(person_id) %>% 
+      summarise(total_transactions=sum(amount, na.rm = TRUE))
+
+# plot total amount per individual
+ggplot(data=total_transaction, aes(total_transactions))+
+      geom_histogram(bins=100)+
+      xlim(c(0,500))
+
+# plot total amount per individual on log scale
+ggplot(data=total_transaction, aes(log(total_transactions)))+
+      geom_histogram(bins=100)
