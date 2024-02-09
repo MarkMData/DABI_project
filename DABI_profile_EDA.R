@@ -252,14 +252,15 @@ monetary_value <- transcript_profile %>%
       group_by(person_id) %>% 
       slice(1) %>% 
       select(total_spend)
-
+dim(profile)
+dim(monetary_value)
 # total frequency column for every person
 number_transaction<-transcript_profile %>% 
       select(person_id,transaction) %>% 
       group_by(person_id) %>% 
       summarise(sum(transaction))
 
-number_transaction
+
 
 # recency column
 recency <- transcript_profile %>% 
@@ -267,4 +268,12 @@ recency <- transcript_profile %>%
       filter(transaction==1) %>% 
       group_by(person_id) %>% 
       summarise(recency=max(time))
-recency      
+
+# check if customers with no transactions removed
+dim(profile)
+dim(monetary_value)
+dim(number_transaction)
+dim(recency)   
+
+
+
