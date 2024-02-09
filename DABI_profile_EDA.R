@@ -280,6 +280,25 @@ rfm_table<-right_join(recency, number_transaction, by="person_id", )
 rfm_table<-inner_join(rfm_table, monetary_value, by="person_id")
 
 head(rfm_table)
+
 # rename columns
 colnames(rfm_table)<-c( "person_id","recency","frequency","monetary_value")
+
+
+# check minimum in recency
+rfm_table %>% 
+      drop_na(recency) %>% 
+      summarise(min(recency))
+
+# change na values to 0
+rfm_table$recency[is.na(rfm_table$recency)]<-0
+
+# check if na removed and replaced with 0
+rfm_table %>% 
+      summarise(min(recency))
+
+sum(is.na(rfm_table$recency))
+
+summary(rfm_table)
+
 
