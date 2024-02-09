@@ -235,3 +235,70 @@ ggplot(data=offer_count, aes(ov_perc, oc_perc, col=factor(difficulty-reward)))+
       geom_abline(slope=1,intercept=0)+
       xlim(c(0,1))+
       ylim(c(0,1))
+
+
+#######  RFM  #########
+
+# merge transcript and profile with inner join to remove people aged 118
+transcript_profile<-merge(transcript, profile, by.x="person_id", by.y="id")
+
+dim(transcript)
+dim(transcript_profile)
+
+# total monetary value column for every person
+colnames(transcript_profile)
+
+monetary_value <- transcript_profile %>% 
+      group_by(person_id) %>% 
+      slice(1) %>% 
+      select(total_spend)
+dim(profile)
+dim(monetary_value)
+# total frequency column for every person
+number_transaction<-transcript_profile %>% 
+      select(person_id,transaction) %>% 
+      group_by(person_id) %>% 
+      summarise(sum(transaction))
+
+
+
+# recency column
+recency <- transcript_profile %>% 
+      select(person_id,time, transaction) %>%
+      filter(transaction==1) %>% 
+      group_by(person_id) %>% 
+      summarise(recency=max(time))
+
+# check if customers with no transactions removed
+dim(profile)
+dim(monetary_value)
+dim(number_transaction)
+dim(recency)   
+
+# merge rfm values and rename columns
+rfm_table<-right_join(recency, number_transaction, by="person_id", )
+rfm_table<-inner_join(rfm_table, monetary_value, by="person_id")
+
+head(rfm_table)
+
+# rename columns
+colnames(rfm_table)<-c( "person_id","recency","frequency","monetary_value")
+
+
+# check minimum in recency
+rfm_table %>% 
+      drop_na(recency) %>% 
+      summarise(min(recency))
+
+# change na values to 0
+rfm_table$recency[is.na(rfm_table$recency)]<-0
+
+# check if na removed and replaced with 0
+rfm_table %>% 
+      summarise(min(recency))
+
+sum(is.na(rfm_table$recency))
+
+summary(rfm_table)
+
+
