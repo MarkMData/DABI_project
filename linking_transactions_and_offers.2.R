@@ -207,17 +207,17 @@ p4 <- offer_trans(period4)
 p5 <- offer_trans(period5)
 p6 <- offer_trans(period6)
 
-complete_df <-
+all_periods_df <-
   bind_rows(p1,p2,p3,p4,p5,p6)
 
 # combining the transaction and amounts from all the periods
-complete_df <- complete_df |>
+all_periods_df <- all_periods_df |>
   filter(Offer_num != 'no_offer') |>
   group_by(person_id, Offer_num) |>
   summarise(off_trans = sum(off_trans),
             off_amount = sum(off_amount))
 # Creating a df with offer transactions in wide format
-all_trans <- complete_df |>
+all_trans <- all_periods_df |>
   pivot_wider(id_cols = person_id,
               names_from = Offer_num,
               values_from = off_trans,
@@ -226,7 +226,7 @@ all_trans <- complete_df |>
   )
 
 # Creating a df with offer amounts in wide format
-all_ammounts <- complete_df |>
+all_ammounts <- all_periods_df |>
   pivot_wider(id_cols = person_id,
               names_from = Offer_num,
               values_from = off_amount,
