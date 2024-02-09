@@ -274,7 +274,7 @@ length(summaries_by_offer$person_id)
 ################################################################################
 # getting overall offer and transaction totals
 ################################################################################
-trans_summaries <- transcript2 |>
+overall_summaries <- transcript2 |>
   group_by(person_id) |>
   summarise(tot_off_rec = sum(offer_received),
             tot_off_view = sum(offer_viewed),
@@ -306,7 +306,7 @@ rownames(portfolio_wide_df) <- NULL
 # Joining the dataframes
 ################################################################################
 
-data_wide <- full_join(profile, trans_summaries, by = 'person_id')
+data_wide <- full_join(profile, overall_summaries, by = 'person_id')
 data_wide <- full_join(data_wide, summaries_by_offer, by = 'person_id')
 data_wide <- cbind(data_wide, portfolio_wide_df)
 
