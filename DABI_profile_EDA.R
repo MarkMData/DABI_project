@@ -245,9 +245,15 @@ transcript_profile<-merge(transcript, profile, by.x="person_id", by.y="id")
 dim(transcript)
 dim(transcript_profile)
 
-# total monetary value column for every person
+
 colnames(transcript_profile)
 
+# check for duplicates
+duplicates <- transcript_profile[duplicated(transcript_profile) |
+                                duplicated(transcript_profile, fromLast = TRUE), ]
+
+duplicates
+# total monetary value column for every person
 monetary_value <- transcript_profile %>% 
       group_by(person_id) %>% 
       slice(1) %>% 
@@ -293,12 +299,171 @@ rfm_table %>%
 # change na values to 0
 rfm_table$recency[is.na(rfm_table$recency)]<-0
 
-# check if na removed and replaced with 0
-rfm_table %>% 
-      summarise(min(recency))
-
-sum(is.na(rfm_table$recency))
-
-summary(rfm_table)
 
 
+# function to create rfm table
+make_rfm<-function(factors){
+      # create vector totalmoney spent
+      monetary_value <- transcript_profile %>% 
+            group_by(person_id) %>% 
+            slice(1) %>% 
+            select(total_spend)
+      # create vector frequecy of transactions
+      frequency<-transcript_profile %>% 
+            select(person_id,transaction) %>% 
+            group_by(person_id) %>% 
+            summarise(sum(transaction))
+      # create vector recency of transactions
+      recency <- transcript_profile %>% 
+            select(person_id,time, transaction) %>%
+            filter(transaction==1) %>% 
+            group_by(person_id) %>% 
+            summarise(recency=max(time))
+      # join 3 columns (right join with recency as it loses people who don't have a transaction)
+      rfm_table<-right_join(recency, frequency, by="person_id")
+      rfm_table<-inner_join(rfm_table, monetary_value, by="person_id")
+      # change colnames
+      colnames(rfm_table)<-c( "person_id","recency","frequency","monetary_value")
+      # fill recency with 0 for people who have not had a transaction
+      rfm_table$recency[is.na(rfm_table$recency)]<-0
+      # create rfm values by creating factors based on number of breaks chosen in function
+      rfm_table["r_score"]<-factor(Hmisc::cut2(rfm_table$recency, cuts=c(quantile(rfm_table$recency, probs = seq(0, 1, by = 1/factors))), g = factors), labels = c(1:factors))
+      rfm_table["f_score"]<- factor(Hmisc::cut2(rfm_table$frequency, cuts=c(quantile(rfm_table$frequency, probs = seq(0, 1, by = 1/factors))), g = factors), labels = c(1:factors))
+      rfm_table["m_score"]<- factor(Hmisc::cut2(rfm_table$monetary_value, cuts=c(quantile(rfm_table$monetary_value, probs = seq(0, 1, by = 1/factors))), g = factors), labels = c(1:factors))
+      # create fm score and string adding f_score with m_score
+      rfm_table["fm_string"]<-str_c(rfm_table$f_score,rfm_table$m_score)
+      rfm_table["fm_score"]<-as.numeric(rfm_table$f_score)+as.numeric(rfm_table$m_score)
+      # create rfm score and string adding r_score with f_score and m_score
+      rfm_table["rfm_string"]<-str_c(rfm_table$r_score,rfm_table$f_score,rfm_table$m_score)
+      rfm_table["rfm_score"]<-as.numeric(rfm_table$r_score)+as.numeric(rfm_table$f_score)+as.numeric(rfm_table$m_score)
+      # return merge with profile data frame removing total spend asduplicated with monetary value
+      return(merge(profile,rfm_table, by.x="id", by.y="person_id") %>% select(-total_spend))
+}
+
+# create rfm table splitting into 
+rfm_table<-make_rfm(10)
+rfm_table
+
+# cut offers into quantile ranges of 5
+
+# plot factor split
+ggplot(data=rfm_table, aes(recency))+
+      geom_histogram(aes(fill=r_score))
+
+ggplot(data=rfm_table, aes(frequency))+
+      geom_histogram(aes(fill=f_score))
+
+ggplot(data=rfm_table, aes(monetary_value))+
+      geom_histogram(aes(fill=m_score))
+
+# check groups equally split
+rfm_table %>% group_by(r_score) %>% 
+      count()
+
+rfm_table %>% group_by(f_score) %>% 
+      count()
+
+rfm_table %>% group_by(m_score) %>% 
+      count()
+
+# check group split
+rfm_table %>% group_by(rfm_string) %>% 
+      count() %>% 
+      arrange(desc(n))
+
+rfm_table %>% group_by(fm_string) %>% 
+      count() %>% 
+      arrange(desc(n))
+
+# check rfm, fm and r, f and m change with gender
+ggplot(rfm_table,aes(y=rfm_score))+
+      geom_boxplot(aes(fill=gender))
+ggplot(rfm_table,aes(y=fm_score))+
+      geom_boxplot(aes(fill=gender))
+ggplot(rfm_table,aes(y=as.numeric(r_score)))+
+      geom_boxplot(aes(fill=gender))+
+      ylab("r_score")+
+      xlab("")+
+      theme_classic() +
+      theme_update(axis.ticks.x = element_blank(),
+                   axis.text.x = element_blank())
+
+ggplot(rfm_table,aes(y=as.numeric(f_score)))+
+      geom_boxplot(aes(fill=gender))+
+      ylab("f_score")+
+      xlab("")+
+      theme_classic() +
+      theme_update(axis.ticks.x = element_blank(),
+                   axis.text.x = element_blank())
+
+# largest difference where malesaveragely spend less
+ggplot(rfm_table,aes(y=as.numeric(m_score)))+
+      geom_boxplot(aes(fill=gender))+
+      ylab("m_score")+
+      xlab("")+
+      theme_classic() +
+      theme_update(axis.ticks.x = element_blank(),
+                   axis.text.x = element_blank())
+
+
+# create age factor
+summary(rfm_table$age)
+age_factor<-cut(rfm_table$age, breaks=c(17, 29, 39, 49, 59, 69, 101))
+age_label<-c('18-29', '30-39', '40-49', '50-59','60-69',"70+")
+#plot changes in r, m, f with age
+ggplot(rfm_table,aes(y=rfm_score))+
+      geom_boxplot(aes(fill=age_factor))+
+      scale_fill_discrete(labels=age_label)
+
+ggplot(rfm_table,aes(y=fm_score))+
+      geom_boxplot(aes(fill=age_factor))+
+      scale_fill_discrete(labels=age_label)
+
+ggplot(rfm_table,aes(y=as.numeric(r_score)))+
+      geom_boxplot(aes(fill=age_factor))+
+      scale_fill_discrete(labels=age_label)
+# young people appear to be more frequent
+ggplot(rfm_table,aes(y=as.numeric(f_score)))+
+      geom_boxplot(aes(fill=age_factor))+
+      scale_fill_discrete(labels=age_label)
+
+#older people total spend is more
+ggplot(rfm_table,aes(y=as.numeric(m_score)))+
+      geom_boxplot(aes(fill=age_factor))+
+      scale_fill_discrete(labels=age_label)
+
+
+# check income range
+quantile(rfm_table$income, by=c(0,0.25,.5,0.75,1))
+# make income factor
+income_factor<-cut(rfm_table$income,breaks=c(29999,39999,49999,59999,69999, 79999,89999,120000))
+income_label<-c('$30000-$39999', '$40000-$49999', '$50000-$59999', '$60000-$69999',
+                '$70000-$79999','$80000-$89999','$90000-$120000')
+
+# plot rfm_score compared to income
+ggplot(rfm_table,aes(y=rfm_score))+
+      geom_boxplot(aes(fill=income_factor))+
+      scale_fill_discrete(labels=income_label)
+
+ggplot(rfm_table,aes(y=fm_score))+
+      geom_boxplot(aes(fill=income_factor))+
+      scale_fill_discrete(labels=income_label)
+
+
+ggplot(rfm_table,aes(y=as.numeric(r_score)))+
+      geom_boxplot(aes(fill=income_factor))+
+      scale_fill_discrete(labels=income_label)
+# lower earners go more frequently
+ggplot(rfm_table,aes(y=as.numeric(f_score)))+
+      geom_boxplot(aes(fill=income_factor))+
+      scale_fill_discrete(labels=income_label)
+# higher earners spend larger amounts
+ggplot(rfm_table,aes(y=as.numeric(m_score)))+
+      geom_boxplot(aes(fill=income_factor))+
+      scale_fill_discrete(labels=income_label)
+
+# check if high spends are outliers
+sort(rfm_table$monetary_value, decreasing=TRUE)[1:20]
+
+# check if max spent are outliers
+sort(rfm_table$max_spend, decreasing = TRUE)[1:20]
