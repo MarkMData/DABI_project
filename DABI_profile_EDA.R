@@ -467,3 +467,12 @@ sort(rfm_table$monetary_value, decreasing=TRUE)[1:20]
 
 # check if max spent are outliers
 sort(rfm_table$max_spend, decreasing = TRUE)[1:20]
+
+
+ggplot(data=rfm_table, aes(age, income))+
+      geom_point()
+cor(rfm_table$age,rfm_table$income)
+working_age_rfm<-rfm_table %>% filter(age<65)
+cor(working_age_rfm$age, working_age_rfm$income)
+working_age_rfm<-rfm_table %>% filter(age<60)
+cor(working_age_rfm$age, working_age_rfm$income)
