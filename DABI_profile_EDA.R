@@ -1,6 +1,8 @@
 library(tidyverse)
 library(magrittr)
 library(GGally)
+library(stringr)
+library(Hmisc)
 
 profile <- read.csv('profile.csv')
 portfolio <- read.csv('portfolio.csv')
@@ -299,7 +301,7 @@ rfm_table %>%
 # change na values to 0
 rfm_table$recency[is.na(rfm_table$recency)]<-0
 
-
+profile
 
 # function to create rfm table
 make_rfm<-function(factors){
@@ -307,15 +309,15 @@ make_rfm<-function(factors){
       monetary_value <- transcript_profile %>% 
             group_by(person_id) %>% 
             slice(1) %>% 
-            select(total_spend)
+            dplyr::select(total_spend)
       # create vector frequecy of transactions
       frequency<-transcript_profile %>% 
-            select(person_id,transaction) %>% 
+            dplyr::select(person_id,transaction) %>% 
             group_by(person_id) %>% 
             summarise(sum(transaction))
       # create vector recency of transactions
       recency <- transcript_profile %>% 
-            select(person_id,time, transaction) %>%
+            dplyr::select(person_id,time, transaction) %>%
             filter(transaction==1) %>% 
             group_by(person_id) %>% 
             summarise(recency=max(time))
@@ -337,7 +339,7 @@ make_rfm<-function(factors){
       rfm_table["rfm_string"]<-str_c(rfm_table$r_score,rfm_table$f_score,rfm_table$m_score)
       rfm_table["rfm_score"]<-as.numeric(rfm_table$r_score)+as.numeric(rfm_table$f_score)+as.numeric(rfm_table$m_score)
       # return merge with profile data frame removing total spend asduplicated with monetary value
-      return(merge(profile,rfm_table, by.x="id", by.y="person_id") %>% select(-total_spend))
+      return(merge(profile,rfm_table, by.x="id", by.y="person_id") %>% dplyr::select(-total_spend))
 }
 
 # create rfm table splitting into 
@@ -476,3 +478,7 @@ working_age_rfm<-rfm_table %>% filter(age<65)
 cor(working_age_rfm$age, working_age_rfm$income)
 working_age_rfm<-rfm_table %>% filter(age<60)
 cor(working_age_rfm$age, working_age_rfm$income)
+
+
+summary(income_factor)
+summary(age_factor)
