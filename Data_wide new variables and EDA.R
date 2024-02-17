@@ -221,3 +221,19 @@ corrplot(correlation_matrix, method = "circle", type = "upper",
 
 library(GGally)
 ggpairs(data_wide[, sapply(data_wide, is.numeric)])
+
+as.data.frame(colnames(data_wide))
+as.data.frame(sapply(data_wide, class), )
+
+for(i in colnames(data_wide)){
+  print(length(unique(data_wide[,i])))
+}
+
+
+ggplot(data_wide, aes(tenure, membership_duration_years))+
+  geom_point()
+
+ggplot(data_wide, aes(average_spend_per_transaction, ave_amount))+
+  geom_point()
+
+
