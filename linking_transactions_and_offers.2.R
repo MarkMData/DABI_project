@@ -254,7 +254,7 @@ offer_summaries <- transcript2 |>
     off_comp = sum(offer_completed),
     tot_reward = sum(reward_rec))
 
-# droping the transaction rows
+# dropping the transaction rows
 offer_summaries <- offer_summaries[complete.cases(offer_summaries$offer_num), ]
 
 # creating a wide format
@@ -322,7 +322,58 @@ length(duplicates$person_id)     # no duplicates
 # saving combined dataframe as csv
 write.csv(data_wide, "data_wide.csv", row.names = FALSE)
 
-  
+################################################################################
+# putting data in long format
+################################################################################
+
+# combining the transaction and amounts from all the periods
+all_periods_df2 <-
+  bind_rows(p1,p2,p3,p4,p5,p6)
+
+all_periods_df2 <- all_periods_df2 |>
+  filter(Offer_num != 'no_offer') |>
+  group_by(person_id, Offer_num) |>
+  summarise(transactions = sum(off_trans),
+            amount = sum(off_amount)) |>
+  rename(offer_num = Offer_num)
+
+offer_summaries2 <- transcript2 |>
+  group_by(person_id, offer_num) |>
+  summarise(
+    off_rec = sum(offer_received),
+    off_view = sum(offer_viewed),
+    off_comp = sum(offer_completed),
+    reward = sum(reward_rec))
+# dropping the transaction rows
+offer_summaries2 <- offer_summaries2[complete.cases(offer_summaries2$offer_num), ]
+
+trans_plus_offers <- full_join(all_periods_df2, offer_summaries2,
+                               by = c('person_id', 'offer_num'))
+
+overall_summaries2 <- transcript2 |>
+  group_by(person_id) |>
+  summarise(off_rec = sum(offer_received),
+            off_view = sum(offer_viewed),
+            off_comp = sum(offer_completed),
+            reward = sum(reward_rec),
+            transactions = sum(transaction),
+            amount = sum(amount)
+  )
+overall_summaries2$offer_num <- 'total'
+
+trans_plus_offers2 <- rbind(trans_plus_offers, overall_summaries2)
+
+# merging offer and transactions with profile and portfolio data
+
+data_long <- full_join(trans_plus_offers2, profile, by = 'person_id')
+data_long <- full_join(data_long, portfolio, by = 'offer_num')
+
+# Dropping the observations with age = 118
+data_long <- data_long[data_long$age!=118,] 
+
+
+# saving combined dataframe as csv
+write.csv(data_long, "data_long.csv", row.names = FALSE)  
 
   
   
