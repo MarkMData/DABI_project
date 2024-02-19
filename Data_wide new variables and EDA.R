@@ -7,7 +7,7 @@ library(readr)
 library(corrplot)
 library(ggplot2)
 
-data_wide <- read_csv("data_wide.csv")
+data_wide <- read_csv("data_wide2.csv")
 
 ################################################################################
 ## Adding New Variables to Wide Dataset
@@ -267,27 +267,84 @@ ggplot(data_wide, aes(tenure, membership_duration_years))+
 ggplot(data_wide, aes(average_spend_per_transaction, ave_amount))+
   geom_point()
 
+
+# histograms of percentage of reward claimed
 ggplot(data=data_wide, aes(perc_reward_cashed))+
   geom_histogram()
 
 ggplot(data=data_wide, aes(perc_reward_cashed))+
-  geom_histogram(aes(fill=gender))
+  geom_histogram()+
+  facet_wrap(vars(gender))
 
 ggplot(data=data_wide, aes(perc_reward_cashed))+
-  geom_histogram(aes(fill=age_group))
+  geom_histogram()+
+  facet_wrap(vars(age_group))
 
 ggplot(data=data_wide, aes(perc_reward_cashed))+
-  geom_histogram(aes(fill=income_bracket))
+  geom_histogram()+
+  facet_wrap(vars(income_bracket))
 
-
+# histograms of percentage of difficulty claimed
 ggplot(data=data_wide, aes(perc_difficulty_cashed))+
   geom_histogram()
 
 ggplot(data=data_wide, aes(perc_difficulty_cashed))+
-  geom_histogram(aes(fill=gender))
+  geom_histogram()+
+  facet_wrap(vars(gender))
 
 ggplot(data=data_wide, aes(perc_difficulty_cashed))+
-  geom_histogram(aes(fill=age_group))
+  geom_histogram()+
+  facet_wrap(vars(age_group))
 
 ggplot(data=data_wide, aes(perc_difficulty_cashed))+
-  geom_histogram(aes(fill=income_bracket))
+  geom_histogram()+
+  facet_wrap(vars(income_bracket))
+
+# channels of offers completed vs age gender and income
+ggplot(data_wide, aes(email_comp_rate)) +
+  geom_bar() +
+  facet_wrap(vars(income_bracket))
+
+ggplot(data_wide, aes(mobile_comp_rate)) +
+  geom_bar() +
+  facet_wrap(vars(income_bracket))
+
+ggplot(data_wide, aes(social_comp_rate)) +
+  geom_bar() +
+  facet_wrap(vars(income_bracket))
+
+ggplot(data_wide, aes(web_comp_rate)) +
+  geom_bar() +
+  facet_wrap(vars(income_bracket))
+
+ggplot(data_wide, aes(email_comp_rate)) +
+  geom_bar() +
+  facet_wrap(vars(age_group))
+
+ggplot(data_wide, aes(mobile_comp_rate)) +
+  geom_bar() +
+  facet_wrap(vars(age_group))
+
+ggplot(data_wide, aes(social_comp_rate)) +
+  geom_bar() +
+  facet_wrap(vars(age_group))
+
+ggplot(data_wide, aes(web_comp_rate)) +
+  geom_bar() +
+  facet_wrap(vars(age_group))
+
+ggplot(data_wide, aes(email_comp_rate)) +
+  geom_bar() +
+  facet_wrap(vars(gender))
+
+ggplot(data_wide, aes(mobile_comp_rate)) +
+  geom_bar() +
+  facet_wrap(vars(gender))
+
+ggplot(data_wide, aes(social_comp_rate)) +
+  geom_bar() +
+  facet_wrap(vars(gender))
+
+ggplot(data_wide, aes(web_comp_rate)) +
+  geom_bar() +
+  facet_wrap(vars(gender))
