@@ -102,7 +102,7 @@ discount_df<-data_long %>%
          discount_difficulty_view=(difficulty*off_view), 
          discount_difficulty_rec=(difficulty*off_rec)) %>% 
   group_by(person_id) %>% 
-  summarise(tot_discount_reward_rec=sum(reward_offer),
+  summarise(tot_discount_reward_rec=sum(reward_off),
             tot_discount_reward_comp=sum(reward),
             tot_discount_comp=sum(off_comp), 
             tot_discount_rec=sum(off_rec), 
@@ -153,5 +153,4 @@ ggplot(inform_df, aes(perc_inform_view)) +
 inform_df %>% group_by(perc_inform_view) %>% count()
 
 inform_df %>% count()
-
 
