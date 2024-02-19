@@ -1,26 +1,43 @@
-data_long<-read.csv("data_long.csv")
-
+data_long<-read.csv("data_long2.csv")
+data_wide<-read.csv("data_wide2.csv")
+portfolio<-read.csv("portfolio.csv")
+portfolio
+e %>% select(reward_off_offer1)
 
 colnames(data_long)
 head(data_long)
 data_long %>% select(reward, reward_off)
-
-# check channels offers were delivered
+###########################################################
+#look how people interact with offers
+###########################################################
+# check number of offers completed
 data_long %>% filter(bogo==1) %>% 
-  select(offer_num,mobile,social, web) %>% 
   group_by(offer_num) %>% 
+  summarise(sum(off_comp))
+
+# check channels offers were delivered # is error in reward?
+data_long %>% filter(bogo==1) %>% 
+  group_by(offer_num) %>% 
+  mutate(tot_off_comp=sum(off_comp),tot_off_rec= sum(off_rec), tot_off_view=sum(off_view)) %>% 
+  select(offer_num, tot_off_rec, tot_off_view, tot_off_comp,reward_off,difficulty, duration, mobile, social, web) %>% 
   slice(1)
 
 data_long %>% filter(discount==1) %>% 
-  select(offer_num,mobile,social, web) %>% 
   group_by(offer_num) %>% 
+  mutate(tot_off_comp=sum(off_comp),tot_off_rec= sum(off_rec), tot_off_view=sum(off_view)) %>% 
+  select(offer_num, tot_off_rec, tot_off_view, tot_off_comp, reward_off,difficulty, duration, mobile, social, web) %>% 
   slice(1)
 
 data_long %>% filter(informational==1) %>% 
-  select(offer_num,mobile,social, web) %>% 
   group_by(offer_num) %>% 
+  mutate(tot_off_comp=sum(off_comp),tot_off_rec= sum(off_rec), tot_off_view=sum(off_view)) %>% 
+  select(offer_num, tot_off_rec, tot_off_view, tot_off_comp, reward_off,difficulty, duration, mobile, social, web) %>% 
   slice(1)
+###########################################################
 
+###########################################################
+# make new dataframe with offer percentages
+##########################################################
 # create dataframe with bogo voucher interactions
 bogo_df<-data_long %>% 
   filter(off_rec==1, bogo==1) %>% 
