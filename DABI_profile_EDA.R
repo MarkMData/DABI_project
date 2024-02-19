@@ -482,3 +482,25 @@ cor(working_age_rfm$age, working_age_rfm$income)
 
 summary(income_factor)
 summary(age_factor)
+
+colnames(transcript)
+transactions<-transcript %>% filter(transaction==1)
+colnames(transactions)
+ggplot(data=transactions, aes(time)) +
+  geom_histogram()
+
+
+colnames(rfm_table)
+rfm_table["person_id"]<-rfm_table$id
+transactions_rfm<-merge(transactions, rfm_table, by.x="person_id", by.y="id")
+colnames(transactions_rfm)
+
+ggplot(data=transactions_rfm, aes(time)) +
+  geom_histogram()+
+  facet_wrap(vars(f_score))
+
+
+ggplot(data=transactions_rfm, aes(time)) +
+  geom_histogram()+
+  facet_wrap(vars(m_score))
+
