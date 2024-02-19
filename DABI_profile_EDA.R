@@ -504,3 +504,7 @@ ggplot(data=transactions_rfm, aes(time)) +
   geom_histogram()+
   facet_wrap(vars(m_score))
 
+colnames(rfm_table)
+rfm_table<-rfm_table %>% select(-id)
+
+write.csv(rfm_table, "rfm_table.csv", row.names = FALSE)  
