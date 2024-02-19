@@ -92,6 +92,36 @@ data_wide$promotion_interaction_rate <- (data_wide$tot_off_view + data_wide$tot_
 # 9. Promotion Conversion Rate -------------------------------------------------
 data_wide$promotion_conversion_rate <- with(data_wide, ifelse(tot_off_view > 0, tot_off_comp / tot_off_view, 0))
 
+#10 Percentage of reward cashed
+
+summary(data_wide$perc_reward_cashed)
+sum(data_wide$perc_reward_cashed==Inf, na.rm=TRUE)
+data_wide %>% filter(perc_reward_cashed>1) %>% select(perc_reward_cashed)
+
+data_wide<-data_wide %>% mutate(perc_reward_cashed=tot_reward/(off_rec_offer1*reward_off_offer1+
+                                                                  off_rec_offer2*reward_off_offer2+off_rec_offer3*reward_off_offer3+
+                                                                  off_rec_offer4*reward_off_offer4+off_rec_offer5*reward_off_offer5+
+                                                                  off_rec_offer6*reward_off_offer6+off_rec_offer7*reward_off_offer7+
+                                                                  off_rec_offer8*reward_off_offer8+off_rec_offer9*reward_off_offer9+
+                                                                  off_rec_offer10*reward_off_offer10))
+
+summary(data_wide$perc_reward_cashed)
+
+#11 percentage of difficulty of offer taken
+data_wide<-data_wide %>% mutate(perc_difficulty_cashed=(off_comp_offer1*difficulty_offer1+
+                                                          off_comp_offer2*difficulty_offer2+off_comp_offer3*difficulty_offer3+
+                                                          off_comp_offer4*difficulty_offer4+off_comp_offer5*difficulty_offer5+
+                                                          off_comp_offer6*difficulty_offer6+off_comp_offer7*difficulty_offer7+
+                                                          off_comp_offer8*difficulty_offer8+off_comp_offer9*difficulty_offer9+
+                                                          off_comp_offer10*difficulty_offer10)/(off_rec_offer1*difficulty_offer1+
+                                                                 off_rec_offer2*difficulty_offer2+off_rec_offer3*difficulty_offer3+
+                                                                 off_rec_offer4*difficulty_offer4+off_rec_offer5*difficulty_offer5+
+                                                                 off_rec_offer6*difficulty_offer6+off_rec_offer7*difficulty_offer7+
+                                                                 off_rec_offer8*difficulty_offer8+off_rec_offer9*difficulty_offer9+
+                                                                 off_rec_offer10*difficulty_offer10))
+
+summary(data_wide$perc_difficulty_cashed)
+
 ## EDA #########################################################################
 # Engagement Rate Variables Visualization --------------------------------------
 # Offer View Rate
@@ -221,3 +251,43 @@ corrplot(correlation_matrix, method = "circle", type = "upper",
 
 library(GGally)
 ggpairs(data_wide[, sapply(data_wide, is.numeric)])
+
+as.data.frame(colnames(data_wide))
+as.data.frame(sapply(data_wide, class), )
+
+for(i in colnames(data_wide)){
+  print(length(unique(data_wide[,i])))
+}
+
+# give same result. Possibly only use one in final analysis
+ggplot(data_wide, aes(tenure, membership_duration_years))+
+  geom_point()
+
+# what is the difference in calculation?
+ggplot(data_wide, aes(average_spend_per_transaction, ave_amount))+
+  geom_point()
+
+ggplot(data=data_wide, aes(perc_reward_cashed))+
+  geom_histogram()
+
+ggplot(data=data_wide, aes(perc_reward_cashed))+
+  geom_histogram(aes(fill=gender))
+
+ggplot(data=data_wide, aes(perc_reward_cashed))+
+  geom_histogram(aes(fill=age_group))
+
+ggplot(data=data_wide, aes(perc_reward_cashed))+
+  geom_histogram(aes(fill=income_bracket))
+
+
+ggplot(data=data_wide, aes(perc_difficulty_cashed))+
+  geom_histogram()
+
+ggplot(data=data_wide, aes(perc_difficulty_cashed))+
+  geom_histogram(aes(fill=gender))
+
+ggplot(data=data_wide, aes(perc_difficulty_cashed))+
+  geom_histogram(aes(fill=age_group))
+
+ggplot(data=data_wide, aes(perc_difficulty_cashed))+
+  geom_histogram(aes(fill=income_bracket))
