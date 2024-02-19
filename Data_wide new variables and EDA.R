@@ -348,3 +348,21 @@ ggplot(data_wide, aes(social_comp_rate)) +
 ggplot(data_wide, aes(web_comp_rate)) +
   geom_bar() +
   facet_wrap(vars(gender))
+
+##########################
+# rfm added to wide_data 
+##########################
+
+rfm_table<- read.csv("rfm_table.csv")
+colnames(rfm_table)
+rfm_table<-rfm_table %>% 
+  select(person_id, r_score,f_score, m_score, rfm_score, rfm_string)
+
+data_wide3<-merge(data_wide, rfm_table, by="person_id")
+summary(data_wide3$r_score)
+summary(data_wide3$f_score)
+summary(data_wide3$m_score)
+summary(data_wide3$rfm_score)
+summary(data_wide3$rfm_string)
+
+write.csv(data_wide3, "data_wide3.csv", row.names = FALSE) 
