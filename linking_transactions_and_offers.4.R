@@ -153,6 +153,10 @@ bogos <- portfolio[portfolio$bogo==1,]$offer_num
 disc <- portfolio[portfolio$discount==1,]$offer_num
 info <- portfolio[portfolio$informational==1,]$offer_num
 
+mob <- portfolio[portfolio$mobile==1,]$offer_num
+social <- portfolio[portfolio$social==1,]$offer_num
+web <- portfolio[portfolio$web==1,]$offer_num
+
 offer_summaries <- transcript2 |>
   mutate(
     bogo_rec = ifelse(
@@ -170,7 +174,25 @@ offer_summaries <- transcript2 |>
     bogo_comp = ifelse(
       offer_completed == 1 & offer_num %in% bogos,1,0),
     disc_comp = ifelse(
-      offer_completed == 1 & offer_num %in% disc,1,0)
+      offer_completed == 1 & offer_num %in% disc,1,0),
+    mob_rec = ifelse(
+      offer_received == 1 & offer_num %in% mob,1,0),
+    social_rec = ifelse(
+      offer_received == 1 & offer_num %in% social,1,0),
+    web_rec = ifelse(
+      offer_received == 1 & offer_num %in% web,1,0),
+    mob_view = ifelse(
+      offer_viewed == 1 & offer_num %in% mob,1,0),
+    social_view = ifelse(
+      offer_viewed == 1 & offer_num %in% social,1,0),
+    web_view = ifelse(
+      offer_viewed == 1 & offer_num %in% web,1,0),
+    mob_comp = ifelse(
+      offer_completed == 1 & offer_num %in% mob,1,0),
+    social_comp = ifelse(
+      offer_completed == 1 & offer_num %in% social,1,0),
+    web_comp = ifelse(
+      offer_completed == 1 & offer_num %in% web,1,0)
   ) |>
   group_by(person_id) |>
   summarise(tot_reward_rec = sum(reward_rec),
@@ -179,10 +201,18 @@ offer_summaries <- transcript2 |>
             info_rec = sum(info_rec),
             bogo_view = sum(bogo_view),
             disc_view = sum(disc_view),
-            bogo_rec = sum(bogo_rec),
-            info_view = sum(info_view),
+            info_view = sum(bogo_rec),
             bogo_comp = sum(bogo_comp),
-            disc_comp = sum(disc_comp)
+            disc_comp = sum(disc_comp),
+            mob_rec = sum(mob_rec),
+            social_rec = sum(social_rec),
+            web_rec = sum(web_rec),
+            mob_view = sum(mob_view),
+            social_view = sum(social_view),
+            web_view = sum(bogo_rec),
+            mob_comp = sum(mob_comp),
+            social_comp = sum(social_comp),
+            web_comp = sum(web_comp)
   )
 
 
