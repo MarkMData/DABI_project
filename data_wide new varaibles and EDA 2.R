@@ -374,5 +374,5 @@ summary(data_wide3$rfm_string)
 
 data_wide3$rfm_string<- as.character(data_wide3$rfm_string)
 
-write.csv(data_wide, "data_wide_temp.csv", row.names = FALSE) 
-
+write.csv(data_wide3, "data_wide_temp.csv", row.names = FALSE) 
+data_wide3
