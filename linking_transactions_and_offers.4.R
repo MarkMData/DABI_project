@@ -201,7 +201,7 @@ offer_summaries <- transcript2 |>
             info_rec = sum(info_rec),
             bogo_view = sum(bogo_view),
             disc_view = sum(disc_view),
-            info_view = sum(bogo_rec),
+            info_view = sum(info_view),
             bogo_comp = sum(bogo_comp),
             disc_comp = sum(disc_comp),
             mob_rec = sum(mob_rec),
@@ -209,7 +209,7 @@ offer_summaries <- transcript2 |>
             web_rec = sum(web_rec),
             mob_view = sum(mob_view),
             social_view = sum(social_view),
-            web_view = sum(bogo_rec),
+            web_view = sum(web_view),
             mob_comp = sum(mob_comp),
             social_comp = sum(social_comp),
             web_comp = sum(web_comp)
