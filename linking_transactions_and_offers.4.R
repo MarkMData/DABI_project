@@ -217,11 +217,11 @@ offer_summaries <- transcript2 |>
 
 
 # Reading in the old data wide file to get the overall totals
-data_wide <- read.csv('data_wide2.csv')
+data_wide <- read.csv('data_wide2.1.csv')
+
 # fixing ave_amount variable
 data_wide$ave_amount <- round(data_wide$tot_amount/data_wide$tot_trans, digits = 2)
-# Keeping the columns that I want
-data_wide <- data_wide[,c(1:3, 5:14)]
+
 # Joing with new variables
 data_wide <- full_join(data_wide, trans_in_out_df)
 data_wide <- full_join(data_wide, offer_summaries)
