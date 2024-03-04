@@ -56,8 +56,8 @@ summary(data_wide$income_bracket)
 
 # 4. Customer Loyalty Variables ------------------------------------------------
 # Convert membership_start to tenure in years 
-data_wide$membership_duration_years <- as.numeric(difftime(Sys.Date(), data_wide$membership_start, units="days")) / 365.25
-summary(data_wide$membership_duration_years)
+#data_wide$membership_duration_years <- as.numeric(difftime(Sys.Date(), data_wide$membership_start, units="days")) / 365.25
+#summary(data_wide$membership_duration_years)
 
 
 # 6. Offer-Type Preference  ----------------------------------------------------
@@ -125,10 +125,9 @@ summary(data_wide$promotion_interaction_rate)
 data_wide$promotion_conversion_rate <- with(data_wide, ifelse(tot_off_view > 0, tot_off_comp / tot_off_view, 0))
 summary(data_wide$promotion_conversion_rate)
 #10 Percentage of reward cashed
-data_wide$reward_rec_rate<-data_wide$tot_reward/data_wide$tot_reward_rec
+data_wide$reward_rec_rate<-data_wide$tot_reward_rec/data_wide$reward_off
 summary(data_wide$reward_rec_rate)
 
-plot(data_wide$tot_reward, data_wide$tot_reward_rec)
 ## EDA #########################################################################
 # Engagement Rate Variables Visualization --------------------------------------
 # Offer View Rate
@@ -376,3 +375,4 @@ summary(data_wide3$rfm_string)
 data_wide3$rfm_string<- as.character(data_wide3$rfm_string)
 
 write.csv(data_wide, "data_wide_temp.csv", row.names = FALSE) 
+
