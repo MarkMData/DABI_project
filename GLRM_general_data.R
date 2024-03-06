@@ -243,3 +243,94 @@ data_wide<-left_join(data_wide, glrm_join, by="person_id")
 data_wide
 
 
+# investigate cluster 3
+
+data_wide %>% group_by(cluster3) %>% 
+  count()
+
+# income increases per group
+data_wide %>% group_by(cluster3) %>% 
+  summarise(mean(income), median(income), std=sqrt(var(income)))
+
+ggplot(data=data_wide, aes(cluster3, fill=income_bracket))+
+  geom_bar()+
+  facet_wrap(vars(income_bracket))
+
+# group 1 is all male
+data_wide %>% group_by(cluster3, gender) %>% 
+  count()
+
+ggplot(data_wide, aes(cluster3))+
+  geom_bar(aes(fill=gender))
+
+# group mean spend differently
+data_wide %>% group_by(cluster3) %>% 
+  summarise(mean(tot_amount), median(tot_amount), std=sqrt(var(tot_amount)))
+
+ggplot(data=data_wide, aes(tot_amount, fill=factor(cluster3)))+
+  geom_histogram()+
+  facet_wrap(vars(factor(cluster3)))
+
+ggplot(data=data_wide, aes(tot_amount, fill=factor(cluster3)))+
+  geom_histogram()
+
+# group mean spend differently
+data_wide %>% group_by(cluster3) %>% 
+  summarise(mean(ave_amount), median(ave_amount), std=sqrt(var(ave_amount)))
+
+ggplot(data=data_wide, aes(ave_amount, fill=factor(cluster3)))+
+  geom_histogram()+
+  xlim(c(0,100))
+
+ggplot(data=data_wide, aes(ave_amount, fill=factor(cluster3)))+
+  geom_histogram()+
+  facet_wrap(vars(factor(cluster3)))
+
+# no. of trans seem similar
+data_wide %>% group_by(cluster3) %>% 
+  summarise(mean(tot_trans), median(tot_trans), std=sqrt(var(tot_trans)))
+
+ggplot(data=data_wide, aes(tot_trans, fill=factor(cluster3)))+
+  geom_bar()+
+  facet_wrap(vars(factor(cluster3)))
+
+ggplot(data=data_wide, aes(tot_trans, fill=factor(cluster3)))+
+  geom_histogram()
+
+
+# less trans in more trans out for cluster 1
+data_wide %>% group_by(cluster3) %>% 
+  summarise(mean(tot_trans_in), mean(tot_trans_out),median(tot_trans_in), median(tot_trans_out),stdin=sqrt(var(tot_trans_in)),stdout=var(tot_trans_out))
+
+# averagely younger group1
+data_wide %>% group_by(cluster3) %>% 
+  summarise(mean(age), median(age), std=sqrt(var(age)))
+
+ggplot(data=data_wide, aes(cluster3, fill=age_group))+
+  geom_bar()+
+  facet_wrap(vars(age_group))
+
+# tenure 6 and 7 shortest tenure 6 longest
+data_wide %>% group_by(cluster3) %>% 
+  summarise(mean(tenure), median(tenure), std=sqrt(var(tenure)))
+
+ggplot(data=data_wide, aes(tenure, fill=factor(cluster3)))+
+  geom_histogram()+
+  facet_wrap(vars(factor(cluster3)))
+
+
+
+ggplot(data=data_wide, aes(web_comp_rate, fill=factor(cluster3)))+
+  geom_bar()+
+  facet_wrap(vars(factor(cluster3)))
+
+ggplot(data=data_wide, aes(disc_response_rate, fill=factor(cluster3)))+
+  geom_bar()+
+  facet_wrap(vars(factor(cluster3)))
+
+ggplot(data=data_wide, aes(bogo_response_rate, fill=factor(cluster3)))+
+  geom_bar()+
+  facet_wrap(vars(factor(cluster3)))
+
+data_wide %>% group_by(cluster3) %>% 
+  summarise(bogo_comp=mean(bogo_response_rate, na.rm = TRUE), bogo_view=mean(bogo_view_rate, na.rm=TRUE), disc_comp=mean(disc_response_rate, na.rm=TRUE),disc_view=mean(disc_view_rate, na.rm=TRUE))
