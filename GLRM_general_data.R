@@ -135,4 +135,29 @@ glrm_model_4 <- h2o.glrm(training_frame=all_data,
                            init="SVD"
 )
 
+# predict missing variables #61 missing variables
+reconstructed_4_data<-h2o::h2o.reconstruct(glrm_model_4, all_data, reverse_transform = TRUE)
+base::names(reconstructed_4_data) = base::names(all_data)
 
+# check importance of architypes
+glrm_model_4@model$importance
+
+# crate dataframe of architypes1 to 4 for every customer
+glrm_table<-as.data.table(h2o.getFrame(glrm_model_4@model$representation_name))
+glrm_table
+
+# create elbow plot
+k<-50
+tot_withinss<-map_dbl(1:k, function(k){
+  model<-kmeans(x=glrm_table, centers=k)
+  model$tot.withinss
+})
+tot_withinss
+
+error_df <- data.frame(k=1:k, tot_withinss=tot_withinss)
+
+ggplot(error_df, aes(k, tot_withinss))+
+  geom_line()+
+  scale_x_continuous(breaks=1:k)+
+  xlab("Number of Clusters")+
+  ylab("Total Within Sum of Squares")
