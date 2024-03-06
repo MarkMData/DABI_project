@@ -15,7 +15,7 @@ data_wide<-read.csv("data_wide_temp.csv")
 colnames(data_wide)
 
 # create dataframe for glrm with general traits
-factor_df<- data_wide %>% select(gender, age, tenure, tot_trans, tot_amount, ave_amount, max_amount, tot_trans_out, tot_trans_in, reward_rec_rate, income)
+factor_df<- data_wide %>% select(person_id,gender, age, tenure, tot_trans, tot_amount, ave_amount, max_amount, tot_trans_out, tot_trans_in, reward_rec_rate, income)
 
 
 # create factor variable of gender - doesn't need to be one hot coding for GLRM
@@ -89,4 +89,28 @@ hist(log(factor_df$reward_rec_rate))
 skew(factor_df$reward_rec_rate)
 kurtosi(factor_df$reward_rec_rate)
 
+# set row name to person id
+rownames(factor_df)<-factor_df$person_id
+factor_df<- factor_df %>% select(-person_id)
+
+########
+#GLRM
+########
+
+h2o.init()
+
+# create h2o dataframe
+all_data <- as.h2o(factor_df)
+str(all_data)
+all_data
+glrm_model_all <- h2o.glrm(training_frame=all_data,
+                           seed=123,
+                           k=11,
+                           loss="Quadratic",
+                           regularization_x = "None",
+                           regularization_y = "None",
+                           transform="STANDARDIZE",
+                           svd_method="GramSVD",
+                           init="SVD"
+)
 
