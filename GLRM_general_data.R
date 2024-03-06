@@ -120,3 +120,19 @@ glrm_model_all <- h2o.glrm(training_frame=all_data,
 reconstructed_all_data<-h2o::h2o.reconstruct(glrm_model_all, all_data, reverse_transform = TRUE)
 base::names(reconstructed_all_data) = base::names(all_data)
 
+# 80% of data is contained with 4 architypes
+glrm_model_all@model$importance
+
+# create glrm with only 4 architypes
+glrm_model_4 <- h2o.glrm(training_frame=all_data,
+                           seed=123,
+                           k=4,
+                           loss="Quadratic",
+                           regularization_x = "None",
+                           regularization_y = "None",
+                           transform="STANDARDIZE",
+                           svd_method="GramSVD",
+                           init="SVD"
+)
+
+
