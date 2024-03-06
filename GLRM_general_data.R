@@ -235,3 +235,11 @@ p<-fviz_cluster(model_kmeans9, data= glrm_table[,1:4],
 p$labels$x<-"Architype 1"
 p$labels$y<-"Architype 2"
 p
+
+#join with data_wide
+glrm_join<-glrm_table %>% select(person_id, cluster3,cluster4,cluster5,cluster6,cluster7,cluster8,cluster9)
+
+data_wide<-left_join(data_wide, glrm_join, by="person_id")
+data_wide
+
+
