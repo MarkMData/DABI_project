@@ -114,3 +114,9 @@ glrm_model_all <- h2o.glrm(training_frame=all_data,
                            init="SVD"
 )
 
+
+
+# predict missing variables #61 missing variables
+reconstructed_all_data<-h2o::h2o.reconstruct(glrm_model_all, all_data, reverse_transform = TRUE)
+base::names(reconstructed_all_data) = base::names(all_data)
+
