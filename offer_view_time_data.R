@@ -167,6 +167,9 @@ offer_view_times
 data_wide <- left_join(data_wide, offer_view_times, by="person_id")
 dim(data_wide)
 
+# create data_wide_temp2
+write.csv(data_wide, "data_wide_temp2.csv")
+
 # check patterns in data
 ggplot(data_wide,aes(ave_view_count))+
   geom_histogram()
