@@ -156,8 +156,82 @@ tot_withinss
 
 error_df <- data.frame(k=1:k, tot_withinss=tot_withinss)
 
+# 7 clusters seems to be best on elbow plot
 ggplot(error_df, aes(k, tot_withinss))+
   geom_line()+
   scale_x_continuous(breaks=1:k)+
   xlab("Number of Clusters")+
   ylab("Total Within Sum of Squares")
+h2o.shutdown()
+# create 3-9 clusters
+set.seed(173)
+
+model_kmeans3<-kmeans(x=glrm_table, centers=3, iter.max=300,nstart=25)
+model_kmeans4<-kmeans(x=glrm_table, centers=4, iter.max=300,nstart=25)
+model_kmeans5<-kmeans(x=glrm_table, centers=5, iter.max=300,nstart=25)
+model_kmeans6<-kmeans(x=glrm_table, centers=6, iter.max=300,nstart=25)
+model_kmeans7<-kmeans(x=glrm_table, centers=7, iter.max=300,nstart=25)
+model_kmeans8<-kmeans(x=glrm_table, centers=8, iter.max=300,nstart=25)
+model_kmeans9<-kmeans(x=glrm_table, centers=9, iter.max=300,nstart=25)
+
+cluster_membership3<-model_kmeans3$cluster
+cluster_membership4<-model_kmeans4$cluster
+cluster_membership5<-model_kmeans5$cluster
+cluster_membership6<-model_kmeans6$cluster
+cluster_membership7<-model_kmeans7$cluster
+cluster_membership8<-model_kmeans8$cluster
+cluster_membership9<-model_kmeans9$cluster
+
+# add cluster to table
+
+glrm_table$person_id<-rownames(factor_df)
+glrm_table$cluster3<-cluster_membership3
+glrm_table$cluster4<-cluster_membership4
+glrm_table$cluster5<-cluster_membership5
+glrm_table$cluster6<-cluster_membership6
+glrm_table$cluster7<-cluster_membership7
+glrm_table$cluster8<-cluster_membership8
+glrm_table$cluster9<-cluster_membership9
+
+# add
+p<-fviz_cluster(model_kmeans3, data= glrm_table[,1:4],
+                geom=c("point","text"), main="Cluster Plot on First Two Architypes")
+p$labels$x<-"Architype 1"
+p$labels$y<-"Architype 2"
+p
+
+p<-fviz_cluster(model_kmeans4, data= glrm_table[,1:4],
+                geom=c("point","text"), main="Cluster Plot on First Two Architypes")
+p$labels$x<-"Architype 1"
+p$labels$y<-"Architype 2"
+p
+
+p<-fviz_cluster(model_kmeans5, data= glrm_table[,1:4],
+                geom=c("point","text"), main="Cluster Plot on First Two Architypes")
+p$labels$x<-"Architype 1"
+p$labels$y<-"Architype 2"
+p
+
+p<-fviz_cluster(model_kmeans6, data= glrm_table[,1:4],
+                geom=c("point","text"), main="Cluster Plot on First Two Architypes")
+p$labels$x<-"Architype 1"
+p$labels$y<-"Architype 2"
+p
+
+p<-fviz_cluster(model_kmeans7, data= glrm_table[,1:4],
+                geom=c("point","text"), main="Cluster Plot on First Two Architypes")
+p$labels$x<-"Architype 1"
+p$labels$y<-"Architype 2"
+p
+
+p<-fviz_cluster(model_kmeans8, data= glrm_table[,1:4],
+                geom=c("point","text"), main="Cluster Plot on First Two Architypes")
+p$labels$x<-"Architype 1"
+p$labels$y<-"Architype 2"
+p
+
+p<-fviz_cluster(model_kmeans9, data= glrm_table[,1:4],
+                geom=c("point","text"), main="Cluster Plot on First Two Architypes")
+p$labels$x<-"Architype 1"
+p$labels$y<-"Architype 2"
+p
