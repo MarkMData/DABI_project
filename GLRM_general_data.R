@@ -11,7 +11,7 @@ library(h2o)
 library(psych)
 
 # load in data wide
-data_wide<-read.csv("data_wide_temp.csv")
+data_wide<-read.csv("data_wide5.csv")
 colnames(data_wide)
 
 # create dataframe for glrm with general traits
@@ -243,6 +243,8 @@ glrm_join<-glrm_table %>% select(person_id, cluster3,cluster4,cluster5,cluster6,
 data_wide<-left_join(data_wide, glrm_join, by="person_id")
 data_wide
 
+
+
 #######################
 # investigate cluster 3
 #######################
@@ -336,7 +338,12 @@ ggplot(data=data_wide, aes(bogo_response_rate, fill=factor(cluster3)))+
 data_wide %>% group_by(cluster3) %>% 
   summarise(bogo_comp=mean(bogo_response_rate, na.rm = TRUE), bogo_view=mean(bogo_view_rate, na.rm=TRUE), disc_comp=mean(disc_response_rate, na.rm=TRUE),disc_view=mean(disc_view_rate, na.rm=TRUE))
 
-
+data_wide %>% group_by(cluster3, offer_type1) %>% summarise(mean(num_trans1), mean(tot_amount1), mean(ave_amount1))
+data_wide %>% group_by(cluster3, offer_type2) %>% summarise(mean(num_trans2), mean(tot_amount2), mean(ave_amount2))
+data_wide %>% group_by(cluster3, offer_type3) %>% summarise(mean(num_trans3), mean(tot_amount3), mean(ave_amount3))
+data_wide %>% group_by(cluster3, offer_type4) %>% summarise(mean(num_trans4), mean(tot_amount4), mean(ave_amount4))
+data_wide %>% group_by(cluster3, offer_type5) %>% summarise(mean(num_trans5), mean(tot_amount5), mean(ave_amount5))
+data_wide %>% group_by(cluster3, offer_type6) %>% summarise(mean(num_trans6), mean(tot_amount6), mean(ave_amount6))
 #######################
 # investigate cluster 4
 #######################
@@ -432,7 +439,12 @@ ggplot(data=data_wide, aes(bogo_response_rate, fill=factor(cluster4)))+
 data_wide %>% group_by(cluster4) %>% 
   summarise(bogo_comp=mean(bogo_response_rate, na.rm = TRUE), bogo_view=mean(bogo_view_rate, na.rm=TRUE), disc_comp=mean(disc_response_rate, na.rm=TRUE),disc_view=mean(disc_view_rate, na.rm=TRUE))
 
-
+data_wide %>% group_by(cluster4, offer_type1) %>% summarise(mean(num_trans1), mean(tot_amount1), mean(ave_amount1))
+data_wide %>% group_by(cluster4, offer_type2) %>% summarise(mean(num_trans2), mean(tot_amount2), mean(ave_amount2))
+data_wide %>% group_by(cluster4, offer_type3) %>% summarise(mean(num_trans3), mean(tot_amount3), mean(ave_amount3))
+data_wide %>% group_by(cluster4, offer_type4) %>% summarise(mean(num_trans4), mean(tot_amount4), mean(ave_amount4))
+data_wide %>% group_by(cluster4, offer_type5) %>% summarise(mean(num_trans5), mean(tot_amount5), mean(ave_amount5))
+data_wide %>% group_by(cluster4, offer_type6) %>% summarise(mean(num_trans6), mean(tot_amount6), mean(ave_amount6))
 #######################
 # investigate cluster 5
 #######################
@@ -529,4 +541,9 @@ ggplot(data=data_wide, aes(bogo_response_rate, fill=factor(cluster5)))+
 data_wide %>% group_by(cluster5) %>% 
   summarise(bogo_comp=mean(bogo_response_rate, na.rm = TRUE), bogo_view=mean(bogo_view_rate, na.rm=TRUE), disc_comp=mean(disc_response_rate, na.rm=TRUE),disc_view=mean(disc_view_rate, na.rm=TRUE))
 
-
+data_wide %>% group_by(cluster5, offer_type1) %>% summarise(mean(num_trans1), mean(tot_amount1), mean(ave_amount1))
+data_wide %>% group_by(cluster5, offer_type2) %>% summarise(mean(num_trans2), mean(tot_amount2), mean(ave_amount2))
+data_wide %>% group_by(cluster5, offer_type3) %>% summarise(mean(num_trans3), mean(tot_amount3), mean(ave_amount3))
+data_wide %>% group_by(cluster5, offer_type4) %>% summarise(mean(num_trans4), mean(tot_amount4), mean(ave_amount4))
+data_wide %>% group_by(cluster5, offer_type5) %>% summarise(mean(num_trans5), mean(tot_amount5), mean(ave_amount5))
+data_wide %>% group_by(cluster5, offer_type6) %>% summarise(mean(num_trans6), mean(tot_amount6), mean(ave_amount6))
