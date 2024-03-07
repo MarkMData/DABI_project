@@ -149,10 +149,11 @@ glrm_table
 # create elbow plot
 k<-50
 tot_withinss<-map_dbl(1:k, function(k){
-  model<-kmeans(x=glrm_table, centers=k)
+  model<-kmeans(x=glrm_table, centers=k, iter.max=500)
   model$tot.withinss
 })
 tot_withinss
+
 
 error_df <- data.frame(k=1:k, tot_withinss=tot_withinss)
 
@@ -166,13 +167,13 @@ h2o.shutdown()
 # create 3-9 clusters
 set.seed(173)
 
-model_kmeans3<-kmeans(x=glrm_table, centers=3, iter.max=300,nstart=25)
-model_kmeans4<-kmeans(x=glrm_table, centers=4, iter.max=300,nstart=25)
-model_kmeans5<-kmeans(x=glrm_table, centers=5, iter.max=300,nstart=25)
-model_kmeans6<-kmeans(x=glrm_table, centers=6, iter.max=300,nstart=25)
-model_kmeans7<-kmeans(x=glrm_table, centers=7, iter.max=300,nstart=25)
-model_kmeans8<-kmeans(x=glrm_table, centers=8, iter.max=300,nstart=25)
-model_kmeans9<-kmeans(x=glrm_table, centers=9, iter.max=300,nstart=25)
+model_kmeans3<-kmeans(x=glrm_table, centers=3, iter.max=300,nstart=10)
+model_kmeans4<-kmeans(x=glrm_table, centers=4, iter.max=300,nstart=10)
+model_kmeans5<-kmeans(x=glrm_table, centers=5, iter.max=300,nstart=10)
+model_kmeans6<-kmeans(x=glrm_table, centers=6, iter.max=300,nstart=10)
+model_kmeans7<-kmeans(x=glrm_table, centers=7, iter.max=300,nstart=10)
+model_kmeans8<-kmeans(x=glrm_table, centers=8, iter.max=300,nstart=10)
+model_kmeans9<-kmeans(x=glrm_table, centers=9, iter.max=300,nstart=10)
 
 cluster_membership3<-model_kmeans3$cluster
 cluster_membership4<-model_kmeans4$cluster
@@ -430,3 +431,102 @@ ggplot(data=data_wide, aes(bogo_response_rate, fill=factor(cluster4)))+
 
 data_wide %>% group_by(cluster4) %>% 
   summarise(bogo_comp=mean(bogo_response_rate, na.rm = TRUE), bogo_view=mean(bogo_view_rate, na.rm=TRUE), disc_comp=mean(disc_response_rate, na.rm=TRUE),disc_view=mean(disc_view_rate, na.rm=TRUE))
+
+
+#######################
+# investigate cluster 5
+#######################
+# majority in one cluster
+data_wide %>% group_by(cluster5) %>% 
+  count()
+
+# income different for 5 groups although 1 and 2 are similar and 3 and 5
+data_wide %>% group_by(cluster5) %>% 
+  summarise(mean(income), median(income), std=sqrt(var(income)))
+
+ggplot(data=data_wide, aes(cluster5, fill=income_bracket))+
+  geom_bar(aes(y = after_stat(count / sum(count))))+
+  facet_wrap(vars(income_bracket))
+
+# group 1 and 2 are all male
+data_wide %>% group_by(cluster5, gender) %>% 
+  count()
+
+ggplot(data_wide, aes(cluster5))+
+  geom_bar(aes(fill=gender))
+
+# group mean spend differently for all groups
+data_wide %>% group_by(cluster5) %>% 
+  summarise(mean(tot_amount), median(tot_amount), std=sqrt(var(tot_amount)))
+
+ggplot(data=data_wide, aes(tot_amount, fill=factor(cluster5)))+
+  geom_histogram()+
+  facet_wrap(vars(factor(cluster5)))
+
+ggplot(data=data_wide, aes(tot_amount, fill=factor(cluster5)))+
+  geom_histogram()
+
+# group mean spend differently 1 and 2 similar, 3 and 4 similar
+data_wide %>% group_by(cluster5) %>% 
+  summarise(mean(ave_amount), median(ave_amount), std=sqrt(var(ave_amount)))
+
+ggplot(data=data_wide, aes(ave_amount, fill=factor(cluster5)))+
+  geom_histogram()+
+  xlim(c(0,100))
+
+ggplot(data=data_wide, aes(ave_amount, fill=factor(cluster5)))+
+  geom_histogram()+
+  xlim(c(0,150))+
+  facet_wrap(vars(factor(cluster5)))
+
+# o1 nad 3 similar
+data_wide %>% group_by(cluster5) %>% 
+  summarise(mean(tot_trans), median(tot_trans), std=sqrt(var(tot_trans)))
+
+ggplot(data=data_wide, aes(tot_trans, fill=factor(cluster5)))+
+  geom_bar()+
+  facet_wrap(vars(factor(cluster5)))
+
+ggplot(data=data_wide, aes(tot_trans, fill=factor(cluster5)))+
+  geom_histogram()
+
+
+# 1 lowest 2 and 3 similar 4 and 5 highest
+data_wide %>% group_by(cluster5) %>% 
+  summarise(mean(tot_trans_in), mean(tot_trans_out),median(tot_trans_in), median(tot_trans_out),stdin=sqrt(var(tot_trans_in)),stdout=var(tot_trans_out))
+
+# averagely younger 1 and 2 older 4 and 6 
+data_wide %>% group_by(cluster5) %>% 
+  summarise(mean(age), median(age), std=sqrt(var(age)))
+
+ggplot(data=data_wide, aes(cluster5, fill=age_group))+
+  geom_bar()+
+  facet_wrap(vars(age_group))
+
+# tenure 1 and 3 shortest 2 longest
+data_wide %>% group_by(cluster5) %>% 
+  summarise(mean(tenure), median(tenure), std=sqrt(var(tenure)))
+
+ggplot(data=data_wide, aes(tenure, fill=factor(cluster5)))+
+  geom_histogram()+
+  facet_wrap(vars(factor(cluster5)))
+
+
+# 1 least likely to complete offers 4 mostlikely
+ggplot(data=data_wide, aes(web_comp_rate, fill=factor(cluster5)))+
+  geom_bar()+
+  facet_wrap(vars(factor(cluster5)))
+
+ggplot(data=data_wide, aes(disc_response_rate, fill=factor(cluster5)))+
+  geom_bar()+
+  facet_wrap(vars(factor(cluster5)))
+
+ggplot(data=data_wide, aes(bogo_response_rate, fill=factor(cluster5)))+
+  geom_bar()+
+  facet_wrap(vars(factor(cluster5)))
+
+# 1 and 2 least likely to complete offer 4 and 5 most likely
+data_wide %>% group_by(cluster5) %>% 
+  summarise(bogo_comp=mean(bogo_response_rate, na.rm = TRUE), bogo_view=mean(bogo_view_rate, na.rm=TRUE), disc_comp=mean(disc_response_rate, na.rm=TRUE),disc_view=mean(disc_view_rate, na.rm=TRUE))
+
+
