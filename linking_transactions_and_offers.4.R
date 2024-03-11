@@ -56,8 +56,6 @@ transcript2 <- left_join(transcript2, profile, by= 'person_id')
 # dropping age = 118 observations
 transcript2 <- transcript2 |> filter(age != 118)
 
-# removing duplicate rows
-transcript2 <- unique(transcript2)
 
 ################################################################################
 # is there a difference in total spend per person between those who viewed the info
