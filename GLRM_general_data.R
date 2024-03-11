@@ -344,6 +344,9 @@ data_wide %>% group_by(cluster3, offer_type3) %>% summarise(mean(num_trans3), me
 data_wide %>% group_by(cluster3, offer_type4) %>% summarise(mean(num_trans4), mean(tot_amount4), mean(ave_amount4))
 data_wide %>% group_by(cluster3, offer_type5) %>% summarise(mean(num_trans5), mean(tot_amount5), mean(ave_amount5))
 data_wide %>% group_by(cluster3, offer_type6) %>% summarise(mean(num_trans6), mean(tot_amount6), mean(ave_amount6))
+
+data_wide %>% group_by(cluster3) %>% 
+  summarise(mean(income), median(income), )
 #######################
 # investigate cluster 4
 #######################
@@ -547,3 +550,315 @@ data_wide %>% group_by(cluster5, offer_type3) %>% summarise(mean(num_trans3), me
 data_wide %>% group_by(cluster5, offer_type4) %>% summarise(mean(num_trans4), mean(tot_amount4), mean(ave_amount4))
 data_wide %>% group_by(cluster5, offer_type5) %>% summarise(mean(num_trans5), mean(tot_amount5), mean(ave_amount5))
 data_wide %>% group_by(cluster5, offer_type6) %>% summarise(mean(num_trans6), mean(tot_amount6), mean(ave_amount6))
+
+
+#######################
+# investigate cluster 6
+#######################
+# clusters spread more evenly
+data_wide %>% group_by(cluster6) %>% 
+  count()
+
+# income 2 and 3 are similar and 1 5 6 similar
+data_wide %>% group_by(cluster6) %>% 
+  summarise(mean(income), median(income), std=sqrt(var(income)))
+
+ggplot(data=data_wide, aes(cluster6, fill=income_bracket))+
+  geom_bar(aes(y = after_stat(count / sum(count))))+
+  facet_wrap(vars(income_bracket))
+
+# group 1 and 6 are all male
+data_wide %>% group_by(cluster6, gender) %>% 
+  count()
+
+ggplot(data_wide, aes(cluster6))+
+  geom_bar(aes(fill=gender))
+
+# group mean spend differently for all groups 36 lowest 818 highest
+data_wide %>% group_by(cluster6) %>% 
+  summarise(mean(tot_amount), median(tot_amount), std=sqrt(var(tot_amount)))
+
+ggplot(data=data_wide, aes(tot_amount, fill=factor(cluster6)))+
+  geom_histogram()+
+  facet_wrap(vars(factor(cluster6)))
+
+ggplot(data=data_wide, aes(tot_amount, fill=factor(cluster6)))+
+  geom_histogram()
+
+# group mean spend differently 1 and 6 lowest, 5 and 6 similar
+data_wide %>% group_by(cluster6) %>% 
+  summarise(mean(ave_amount), median(ave_amount), std=sqrt(var(ave_amount)))
+
+ggplot(data=data_wide, aes(ave_amount, fill=factor(cluster6)))+
+  geom_histogram()+
+  xlim(c(0,100))
+
+ggplot(data=data_wide, aes(ave_amount, fill=factor(cluster6)))+
+  geom_histogram()+
+  xlim(c(0,150))+
+  facet_wrap(vars(factor(cluster6)))
+
+# 4 lowest 6 highest
+data_wide %>% group_by(cluster6) %>% 
+  summarise(mean(tot_trans), median(tot_trans), std=sqrt(var(tot_trans)))
+
+ggplot(data=data_wide, aes(tot_trans, fill=factor(cluster6)))+
+  geom_bar()+
+  facet_wrap(vars(factor(cluster6)))
+
+ggplot(data=data_wide, aes(tot_trans, fill=factor(cluster6)))+
+  geom_histogram()
+
+
+# 1 lowest 3,5 highest
+data_wide %>% group_by(cluster6) %>% 
+  summarise(mean(tot_trans_in), mean(tot_trans_out),median(tot_trans_in), median(tot_trans_out),stdin=sqrt(var(tot_trans_in)),stdout=var(tot_trans_out))
+
+# averagely younger 5 older 2
+data_wide %>% group_by(cluster6) %>% 
+  summarise(mean(age), median(age), std=sqrt(var(age)))
+
+ggplot(data=data_wide, aes(cluster6, fill=age_group))+
+  geom_bar()+
+  facet_wrap(vars(age_group))
+
+# tenure 6 longest 4 shortest
+data_wide %>% group_by(cluster6) %>% 
+  summarise(mean(tenure), median(tenure), std=sqrt(var(tenure)))
+
+ggplot(data=data_wide, aes(tenure, fill=factor(cluster6)))+
+  geom_histogram()+
+  facet_wrap(vars(factor(cluster6)))
+
+
+# 1 least likely to complete offers 4 mostlikely
+ggplot(data=data_wide, aes(web_comp_rate, fill=factor(cluster6)))+
+  geom_bar()+
+  facet_wrap(vars(factor(cluster6)))
+
+ggplot(data=data_wide, aes(disc_response_rate, fill=factor(cluster6)))+
+  geom_bar()+
+  facet_wrap(vars(factor(cluster6)))
+
+ggplot(data=data_wide, aes(bogo_response_rate, fill=factor(cluster6)))+
+  geom_bar()+
+  facet_wrap(vars(factor(cluster6)))
+
+# 1 and 2 least likely to complete offer 4 and 5 most likely
+data_wide %>% group_by(cluster6) %>% 
+  summarise(bogo_comp=mean(bogo_response_rate, na.rm = TRUE), bogo_view=mean(bogo_view_rate, na.rm=TRUE), disc_comp=mean(disc_response_rate, na.rm=TRUE),disc_view=mean(disc_view_rate, na.rm=TRUE))
+
+data_wide %>% group_by(cluster6, offer_type1) %>% summarise(mean(num_trans1), mean(tot_amount1), mean(ave_amount1)) %>% print(n=Inf)
+data_wide %>% group_by(cluster6, offer_type2) %>% summarise(mean(num_trans2), mean(tot_amount2), mean(ave_amount2)) %>% print(n=Inf)
+data_wide %>% group_by(cluster6, offer_type3) %>% summarise(mean(num_trans3), mean(tot_amount3), mean(ave_amount3)) %>% print(n=Inf)
+data_wide %>% group_by(cluster6, offer_type4) %>% summarise(mean(num_trans4), mean(tot_amount4), mean(ave_amount4)) %>% print(n=Inf)
+data_wide %>% group_by(cluster6, offer_type5) %>% summarise(mean(num_trans5), mean(tot_amount5), mean(ave_amount5)) %>% print(n=Inf)
+data_wide %>% group_by(cluster6, offer_type6) %>% summarise(mean(num_trans6), mean(tot_amount6), mean(ave_amount6))
+
+
+#######################
+# investigate cluster 7
+#######################
+# majority in one cluster
+data_wide %>% group_by(cluster7) %>% 
+  count()
+
+# income different for 5 groups although 1 and 2 are similar and 3 and 5
+data_wide %>% group_by(cluster7) %>% 
+  summarise(mean(income), median(income), std=sqrt(var(income)))
+
+ggplot(data=data_wide, aes(cluster7, fill=income_bracket))+
+  geom_bar(aes(y = after_stat(count / sum(count))))+
+  facet_wrap(vars(income_bracket))
+
+# group 1 and 2 are all male
+data_wide %>% group_by(cluster7, gender) %>% 
+  count()
+
+ggplot(data_wide, aes(cluster7))+
+  geom_bar(aes(fill=gender))
+
+# group mean spend differently for all groups
+data_wide %>% group_by(cluster7) %>% 
+  summarise(mean(tot_amount), median(tot_amount), std=sqrt(var(tot_amount)))
+
+ggplot(data=data_wide, aes(tot_amount, fill=factor(cluster7)))+
+  geom_histogram()+
+  facet_wrap(vars(factor(cluster7)))
+
+ggplot(data=data_wide, aes(tot_amount, fill=factor(cluster7)))+
+  geom_histogram()
+
+# group mean spend differently 1 and 2 similar, 3 and 4 similar
+data_wide %>% group_by(cluster7) %>% 
+  summarise(mean(ave_amount), median(ave_amount), std=sqrt(var(ave_amount)))
+
+ggplot(data=data_wide, aes(ave_amount, fill=factor(cluster7)))+
+  geom_histogram()+
+  xlim(c(0,100))
+
+ggplot(data=data_wide, aes(ave_amount, fill=factor(cluster7)))+
+  geom_histogram()+
+  xlim(c(0,150))+
+  facet_wrap(vars(factor(cluster7)))
+
+# o1 nad 3 similar
+data_wide %>% group_by(cluster7) %>% 
+  summarise(mean(tot_trans), median(tot_trans), std=sqrt(var(tot_trans)))
+
+ggplot(data=data_wide, aes(tot_trans, fill=factor(cluster7)))+
+  geom_bar()+
+  facet_wrap(vars(factor(cluster7)))
+
+ggplot(data=data_wide, aes(tot_trans, fill=factor(cluster7)))+
+  geom_histogram()
+
+
+# 1 lowest 2 and 3 similar 4 and 5 highest
+data_wide %>% group_by(cluster7) %>% 
+  summarise(mean(tot_trans_in), mean(tot_trans_out),median(tot_trans_in), median(tot_trans_out),stdin=sqrt(var(tot_trans_in)),stdout=var(tot_trans_out))
+
+# averagely younger 1 and 2 older 4 and 6 
+data_wide %>% group_by(cluster7) %>% 
+  summarise(mean(age), median(age), std=sqrt(var(age)))
+
+ggplot(data=data_wide, aes(cluster7, fill=age_group))+
+  geom_bar()+
+  facet_wrap(vars(age_group))
+
+# tenure 1 and 3 shortest 2 longest
+data_wide %>% group_by(cluster7) %>% 
+  summarise(mean(tenure), median(tenure), std=sqrt(var(tenure)))
+
+ggplot(data=data_wide, aes(tenure, fill=factor(cluster7)))+
+  geom_histogram()+
+  facet_wrap(vars(factor(cluster7)))
+
+
+# 1 least likely to complete offers 4 mostlikely
+ggplot(data=data_wide, aes(web_comp_rate, fill=factor(cluster7)))+
+  geom_bar()+
+  facet_wrap(vars(factor(cluster7)))
+
+ggplot(data=data_wide, aes(disc_response_rate, fill=factor(cluster7)))+
+  geom_bar()+
+  facet_wrap(vars(factor(cluster7)))
+
+ggplot(data=data_wide, aes(bogo_response_rate, fill=factor(cluster7)))+
+  geom_bar()+
+  facet_wrap(vars(factor(cluster7)))
+
+# 1 and 2 least likely to complete offer 4 and 5 most likely
+data_wide %>% group_by(cluster7) %>% 
+  summarise(bogo_comp=mean(bogo_response_rate, na.rm = TRUE), bogo_view=mean(bogo_view_rate, na.rm=TRUE), disc_comp=mean(disc_response_rate, na.rm=TRUE),disc_view=mean(disc_view_rate, na.rm=TRUE))
+
+data_wide %>% group_by(cluster7, offer_type1) %>% summarise(mean(num_trans1), mean(tot_amount1), mean(ave_amount1))%>% print(n=Inf)
+data_wide %>% group_by(cluster7, offer_type2) %>% summarise(mean(num_trans2), mean(tot_amount2), mean(ave_amount2))%>% print(n=Inf)
+data_wide %>% group_by(cluster7, offer_type3) %>% summarise(mean(num_trans3), mean(tot_amount3), mean(ave_amount3))%>% print(n=Inf)
+data_wide %>% group_by(cluster7, offer_type4) %>% summarise(mean(num_trans4), mean(tot_amount4), mean(ave_amount4))%>% print(n=Inf)
+data_wide %>% group_by(cluster7, offer_type5) %>% summarise(mean(num_trans5), mean(tot_amount5), mean(ave_amount5))%>% print(n=Inf)
+data_wide %>% group_by(cluster7, offer_type6) %>% summarise(mean(num_trans6), mean(tot_amount6), mean(ave_amount6))%>% print(n=Inf)
+
+
+#######################
+# investigate cluster 8
+#######################
+# majority in one cluster
+data_wide %>% group_by(cluster8) %>% 
+  count()
+
+# income different for 5 groups although 1 and 2 are similar and 3 and 5
+data_wide %>% group_by(cluster8) %>% 
+  summarise(mean(income), median(income), std=sqrt(var(income)))
+
+ggplot(data=data_wide, aes(cluster8, fill=income_bracket))+
+  geom_bar(aes(y = after_stat(count / sum(count))))+
+  facet_wrap(vars(income_bracket))
+
+# group 1 and 2 are all male
+data_wide %>% group_by(cluster8, gender) %>% 
+  count()
+
+ggplot(data_wide, aes(cluster8))+
+  geom_bar(aes(fill=gender))
+
+# group mean spend differently for all groups
+data_wide %>% group_by(cluster8) %>% 
+  summarise(mean(tot_amount), median(tot_amount), std=sqrt(var(tot_amount)))
+
+ggplot(data=data_wide, aes(tot_amount, fill=factor(cluster8)))+
+  geom_histogram()+
+  facet_wrap(vars(factor(cluster8)))
+
+ggplot(data=data_wide, aes(tot_amount, fill=factor(cluster8)))+
+  geom_histogram()
+
+# group mean spend differently 1 and 2 similar, 3 and 4 similar
+data_wide %>% group_by(cluster8) %>% 
+  summarise(mean(ave_amount), median(ave_amount), std=sqrt(var(ave_amount)))
+
+ggplot(data=data_wide, aes(ave_amount, fill=factor(cluster8)))+
+  geom_histogram()+
+  xlim(c(0,100))
+
+ggplot(data=data_wide, aes(ave_amount, fill=factor(cluster8)))+
+  geom_histogram()+
+  xlim(c(0,150))+
+  facet_wrap(vars(factor(cluster8)))
+
+# o1 nad 3 similar
+data_wide %>% group_by(cluster8) %>% 
+  summarise(mean(tot_trans), median(tot_trans), std=sqrt(var(tot_trans)))
+
+ggplot(data=data_wide, aes(tot_trans, fill=factor(cluster8)))+
+  geom_bar()+
+  facet_wrap(vars(factor(cluster8)))
+
+ggplot(data=data_wide, aes(tot_trans, fill=factor(cluster8)))+
+  geom_histogram()
+
+
+# 1 lowest 2 and 3 similar 4 and 5 highest
+data_wide %>% group_by(cluster8) %>% 
+  summarise(mean(tot_trans_in), mean(tot_trans_out),median(tot_trans_in), median(tot_trans_out),stdin=sqrt(var(tot_trans_in)),stdout=var(tot_trans_out))
+
+# averagely younger 1 and 2 older 4 and 6 
+data_wide %>% group_by(cluster8) %>% 
+  summarise(mean(age), median(age), std=sqrt(var(age)))
+
+ggplot(data=data_wide, aes(cluster8, fill=age_group))+
+  geom_bar()+
+  facet_wrap(vars(age_group))
+
+# tenure 1 and 3 shortest 2 longest
+data_wide %>% group_by(cluster8) %>% 
+  summarise(mean(tenure), median(tenure), std=sqrt(var(tenure)))
+
+ggplot(data=data_wide, aes(tenure, fill=factor(cluster8)))+
+  geom_histogram()+
+  facet_wrap(vars(factor(cluster8)))
+
+
+# 1 least likely to complete offers 4 mostlikely
+ggplot(data=data_wide, aes(web_comp_rate, fill=factor(cluster8)))+
+  geom_bar()+
+  facet_wrap(vars(factor(cluster8)))
+
+ggplot(data=data_wide, aes(disc_response_rate, fill=factor(cluster8)))+
+  geom_bar()+
+  facet_wrap(vars(factor(cluster8)))
+
+ggplot(data=data_wide, aes(bogo_response_rate, fill=factor(cluster8)))+
+  geom_bar()+
+  facet_wrap(vars(factor(cluster8)))
+
+# 1 and 2 least likely to complete offer 4 and 5 most likely
+data_wide %>% group_by(cluster8) %>% 
+  summarise(bogo_comp=mean(bogo_response_rate, na.rm = TRUE), bogo_view=mean(bogo_view_rate, na.rm=TRUE), disc_comp=mean(disc_response_rate, na.rm=TRUE),disc_view=mean(disc_view_rate, na.rm=TRUE))
+
+data_wide %>% group_by(cluster8, offer_type1) %>% summarise(mean(num_trans1), mean(tot_amount1), mean(ave_amount1))%>% print(n=Inf)
+data_wide %>% group_by(cluster8, offer_type2) %>% summarise(mean(num_trans2), mean(tot_amount2), mean(ave_amount2))%>% print(n=Inf)
+data_wide %>% group_by(cluster8, offer_type3) %>% summarise(mean(num_trans3), mean(tot_amount3), mean(ave_amount3))%>% print(n=Inf)
+data_wide %>% group_by(cluster8, offer_type4) %>% summarise(mean(num_trans4), mean(tot_amount4), mean(ave_amount4))%>% print(n=Inf)
+data_wide %>% group_by(cluster8, offer_type5) %>% summarise(mean(num_trans5), mean(tot_amount5), mean(ave_amount5))%>% print(n=Inf)
+data_wide %>% group_by(cluster8, offer_type6) %>% summarise(mean(num_trans6), mean(tot_amount6), mean(ave_amount6))%>% print(n=Inf)
