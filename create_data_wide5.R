@@ -127,7 +127,7 @@ data_wide5[,59:64][is.na(data_wide5[,59:64])] <- "none"
 colnames(data_wide5)
 data_wide5
 
-
+data_wide5<-data_wide5 %>% select(-view_to_completion_rate)
 write.csv(data_wide5, "data_wide5.csv")
 
 # data_wide5 %>% group_by(cluster3, offer_type1) %>% summarise(mean(num_trans1), mean(tot_amount1), mean(ave_amount1))
