@@ -122,8 +122,9 @@ data_wide5
 
 
 dim(data_wide5)
-data_wide5[,67:84][is.na(data_wide5[,67:84])] <- 0
-data_wide5[,61:66][is.na(data_wide5[,61:66])] <- "none"
+data_wide5[,65:82][is.na(data_wide5[,65:82])] <- 0
+data_wide5[,59:64][is.na(data_wide5[,59:64])] <- "none"
+colnames(data_wide5)
 data_wide5
 
 
