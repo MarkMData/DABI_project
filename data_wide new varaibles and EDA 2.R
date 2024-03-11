@@ -65,8 +65,8 @@ summary(data_wide$income_bracket)
 data_wide$bogo_view_rate<-data_wide$bogo_view/data_wide$bogo_rec
 data_wide$bogo_response_rate<-data_wide$bogo_comp/data_wide$bogo_rec
 
-data_wide$bogo_view_rate<-base::ifelse(data_wide$bogo_view_rate==Inf, NA, data_wide$bogo_view_rate)
-data_wide$bogo_response_rate<-base::ifelse(data_wide$bogo_response_rate==Inf, NA, data_wide$bogo_response_rate)
+#data_wide$bogo_view_rate<-base::ifelse(data_wide$bogo_view_rate==Inf, NA, data_wide$bogo_view_rate)
+#data_wide$bogo_response_rate<-base::ifelse(data_wide$bogo_response_rate==Inf, NA, data_wide$bogo_response_rate)
 
 summary(data_wide$bogo_view_rate)
 summary(data_wide$bogo_response_rate)
@@ -75,8 +75,8 @@ summary(data_wide$bogo_response_rate)
 data_wide$disc_view_rate<-data_wide$disc_view/data_wide$disc_rec
 data_wide$disc_response_rate<-data_wide$disc_comp/data_wide$disc_rec
 
-data_wide$disc_view_rate<-base::ifelse(data_wide$disc_view_rate==Inf, NA, data_wide$disc_view_rate)
-data_wide$disc_response_rate<-base::ifelse(data_wide$disc_response_rate==Inf, NA, data_wide$disc_response_rate)
+#data_wide$disc_view_rate<-base::ifelse(data_wide$disc_view_rate==Inf, NA, data_wide$disc_view_rate)
+#data_wide$disc_response_rate<-base::ifelse(data_wide$disc_response_rate==Inf, NA, data_wide$disc_response_rate)
 
 summary(data_wide$disc_view_rate)
 summary(data_wide$disc_response_rate)
@@ -84,7 +84,7 @@ summary(data_wide$disc_response_rate)
 # # Informational offers
 data_wide$info_view_rate<-data_wide$info_view/data_wide$info_rec
 
-data_wide$info_view_rate<-base::ifelse(data_wide$info_view_rate==Inf, NA, data_wide$info_view_rate)
+#data_wide$info_view_rate<-base::ifelse(data_wide$info_view_rate==Inf, NA, data_wide$info_view_rate)
 summary(data_wide$info_view_rate)
 # 7. Channel Effectiveness -----------------------------------------------------
 # channels <- c("email", "mobile", "social", "web")
@@ -122,8 +122,8 @@ summary(data_wide$social_comp_rate)
 data_wide$promotion_interaction_rate <- (data_wide$tot_off_view + data_wide$tot_off_comp) / data_wide$tot_off_rec
 summary(data_wide$promotion_interaction_rate)
 # 9. Promotion Conversion Rate -------------------------------------------------
-data_wide$promotion_conversion_rate <- with(data_wide, ifelse(tot_off_view > 0, tot_off_comp / tot_off_view, 0))
-summary(data_wide$promotion_conversion_rate)
+#data_wide$promotion_conversion_rate <- with(data_wide, ifelse(tot_off_view > 0, tot_off_comp / tot_off_view, 0))
+#summary(data_wide$promotion_conversion_rate)
 #10 Percentage of reward cashed
 data_wide$reward_rec_rate<-data_wide$tot_reward_rec/data_wide$reward_off
 summary(data_wide$reward_rec_rate)
