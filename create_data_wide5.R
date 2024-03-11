@@ -122,11 +122,10 @@ data_wide5
 
 
 dim(data_wide5)
-data_wide5[,68:85][is.na(data_wide5[,68:85])] <- 0
-data_wide5[,62:67][is.na(data_wide5[,62:67])] <- "none"
+data_wide5[,67:84][is.na(data_wide5[,67:84])] <- 0
+data_wide5[,61:66][is.na(data_wide5[,61:66])] <- "none"
 data_wide5
 
-data_wide5<-data_wide5 %>% select(-view_to_completion_rate)
 
 write.csv(data_wide5, "data_wide5.csv")
 
