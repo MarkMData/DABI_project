@@ -128,6 +128,79 @@ colnames(data_wide5)
 data_wide5
 
 data_wide5<-data_wide5 %>% select(-view_to_completion_rate)
+colnames(data_wide5)
+
+# change log_tot_amount
+summary(log(data_wide5$tot_amount+0.1))
+ggplot(data=data_wide5, aes(tot_amount))+
+  geom_histogram()
+ggplot(data=data_wide5, aes(log(tot_amount+0.1)))+
+  geom_histogram()
+
+summary(log(data_wide5$ave_amount+0.1))
+ggplot(data=data_wide5, aes(ave_amount))+
+  geom_histogram()
+ggplot(data=data_wide5, aes(log(ave_amount+0.1)))+
+  geom_histogram()
+
+summary(log(data_wide5$tot_trans+0.1))
+ggplot(data=data_wide5, aes(tot_trans))+
+  geom_histogram()
+ggplot(data=data_wide5, aes(log(tot_trans+0.1)))+
+  geom_histogram()
+
+summary(log(data_wide5$max_amount+0.1))
+ggplot(data=data_wide5, aes(max_amount))+
+  geom_histogram()
+ggplot(data=data_wide5, aes(log(max_amount+0.1)))+
+  geom_histogram()
+
+summary(log(data_wide5$ave_amount_in+0.1))
+ggplot(data=data_wide5, aes(ave_amount_in))+
+  geom_histogram()
+ggplot(data=data_wide5, aes(log(ave_amount_in+0.1)))+
+  geom_histogram()
+
+summary(log(data_wide5$ave_amount_out+0.1))
+ggplot(data=data_wide5, aes(ave_amount_out))+
+  geom_histogram()
+ggplot(data=data_wide5, aes(log(ave_amount_out+0.1)))+
+  geom_histogram()
+
+#DON'T CHANGE
+summary(log(data_wide5$tot_trans_in+0.1))
+ggplot(data=data_wide5, aes(tot_trans_in))+
+  geom_histogram()
+ggplot(data=data_wide5, aes(log(tot_trans_in+0.1)))+
+  geom_histogram()
+
+#DON'T CHANGE
+summary(log(data_wide5$tot_trans_out+0.1))
+ggplot(data=data_wide5, aes(tot_trans_out))+
+  geom_histogram()
+ggplot(data=data_wide5, aes(log(tot_trans_in+0.1)))+
+  geom_histogram()
+
+#DON'T CHANGE
+summary(log(data_wide5$promotion_interaction_rate+0.1))
+ggplot(data=data_wide5, aes(promotion_interaction_rate))+
+  geom_histogram()
+ggplot(data=data_wide5, aes(log(promotion_interaction_rate+0.1)))+
+  geom_histogram()
+
+#DON'T CHANGE
+summary(log(data_wide5$tenure))
+ggplot(data=data_wide5, aes(tenure))+
+  geom_histogram()
+ggplot(data=data_wide5, aes(log(tenure)))+
+  geom_histogram()
+
+data_wide5<-data_wide5 %>% mutate(log_tot_amount=log(tot_amount+0.1), log_ave_amount=log(ave_amount+0.1),
+                      log_tot_trans=log(tot_trans+0.1), log_max_amount=log(max_amount+0.1),
+                      log_ave_amount_in=log(ave_amount_in+0.1), log_ave_amount_out=log(ave_amount_out+0.1),
+                      log_income=log(income), log_tenure=log(tenure))
+
+
 write.csv(data_wide5, "data_wide5.csv")
 
 # data_wide5 %>% group_by(cluster3, offer_type1) %>% summarise(mean(num_trans1), mean(tot_amount1), mean(ave_amount1))
