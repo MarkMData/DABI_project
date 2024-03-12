@@ -9,6 +9,7 @@ library(factoextra)
 library(cluster)
 library(h2o)
 library(psych)
+library(vegan)
 
 # load in data wide
 data_wide<-read.csv("data_wide5.csv")
@@ -102,7 +103,7 @@ h2o.init()
 # create h2o dataframe
 all_data <- as.h2o(factor_df)
 str(all_data)
-all_data
+dim(all_data)
 glrm_model_all <- h2o.glrm(training_frame=all_data,
                            seed=123,
                            k=11,
@@ -167,6 +168,7 @@ h2o.shutdown()
 # create 3-9 clusters
 set.seed(173)
 
+model_kmeans2<-kmeans(x=glrm_table, centers=2, iter.max=300,nstart=10)
 model_kmeans3<-kmeans(x=glrm_table, centers=3, iter.max=300,nstart=10)
 model_kmeans4<-kmeans(x=glrm_table, centers=4, iter.max=300,nstart=10)
 model_kmeans5<-kmeans(x=glrm_table, centers=5, iter.max=300,nstart=10)
@@ -175,6 +177,7 @@ model_kmeans7<-kmeans(x=glrm_table, centers=7, iter.max=300,nstart=10)
 model_kmeans8<-kmeans(x=glrm_table, centers=8, iter.max=300,nstart=10)
 model_kmeans9<-kmeans(x=glrm_table, centers=9, iter.max=300,nstart=10)
 
+cluster_membership2<-model_kmeans2$cluster
 cluster_membership3<-model_kmeans3$cluster
 cluster_membership4<-model_kmeans4$cluster
 cluster_membership5<-model_kmeans5$cluster
@@ -186,6 +189,7 @@ cluster_membership9<-model_kmeans9$cluster
 # add cluster to table
 
 glrm_table$person_id<-rownames(factor_df)
+glrm_table$cluster2<-cluster_membership2
 glrm_table$cluster3<-cluster_membership3
 glrm_table$cluster4<-cluster_membership4
 glrm_table$cluster5<-cluster_membership5
@@ -195,6 +199,34 @@ glrm_table$cluster8<-cluster_membership8
 glrm_table$cluster9<-cluster_membership9
 
 # add
+
+# 3 has largest silhoutte width
+s2<-silhouette(cluster_membership2, dist(glrm_table[,1:4]))
+summary(s2)
+plot(s2)
+
+s3<-silhouette(cluster_membership3, dist(glrm_table[,1:4]))
+summary(s3)
+plot(s3)
+
+s4<-silhouette(cluster_membership4, dist(glrm_table[,1:4]))
+plot(s4)
+
+s5<-silhouette(cluster_membership5, dist(glrm_table[,1:4]))
+plot(s5)
+
+s6<-silhouette(cluster_membership6, dist(glrm_table[,1:4]))
+plot(s6)
+
+s7<-silhouette(cluster_membership7, dist(glrm_table[,1:4]))
+plot(s7)
+
+s8<-silhouette(cluster_membership8, dist(glrm_table[,1:4]))
+plot(s8)
+
+s9<-silhouette(cluster_membership9, dist(glrm_table[,1:4]))
+plot(s9)
+
 p<-fviz_cluster(model_kmeans3, data= glrm_table[,1:4],
                 geom=c("point","text"), main="Cluster Plot on First Two Architypes")
 p$labels$x<-"Architype 1"
