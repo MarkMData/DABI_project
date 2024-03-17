@@ -41,6 +41,9 @@ portfolio$offer_num <- c('offer1', 'offer2', 'offer3', 'offer4', 'offer5',
 
 # changing the offer duration to hours to match the transcript df
 portfolio$duration <- portfolio$duration*24
+portfolio
+
+write.csv(portfolio, "portfolio2.csv")
 
 # Changing the NA values in reward and amount to zero
 transcript$reward_rec[is.na(transcript$reward_rec)] <- 0
@@ -51,6 +54,9 @@ transcript$amount[is.na(transcript$amount)] <- 0
 transcript2 <- left_join(
   transcript, portfolio[,c('offer_id','duration', 'offer_num')], by = 'offer_id')
 transcript2 %>% filter(person_id=="0020c2b971eb4e9188eac86d93036a77")
+
+write.csv(transcript2, "transcript2.csv", row.names = FALSE)
+
 # Splitting DF into offer periods
 period1 <- transcript2 |> filter(time < 168)
 period2 <- transcript2 |> filter(time >= 168 & time < 336)
@@ -83,6 +89,8 @@ offer_type<-function(X){
   }
   return(X)
 }
+
+
 
 p1_trans<-trans_per_cust(period1) %>% rename(num_trans1=num_trans,tot_amount1=tot_amount, ave_amount1=ave_amount)
 p2_trans<-trans_per_cust(period2) %>% rename(num_trans2=num_trans,tot_amount2=tot_amount, ave_amount2=ave_amount)
