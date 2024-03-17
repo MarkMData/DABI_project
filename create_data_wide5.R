@@ -161,15 +161,15 @@ data_wide5 %>% filter(offer_type1!="discount" & offer_type2!="discount" & offer_
 colnames(data_wide)
   
 
-data_wide6<-data_wide5
+
 dim(data_wide5)
-data_wide6[,65:82][is.na(data_wide6[,65:82])] <- 0
-data_wide6[,59:64][is.na(data_wide6[,59:64])] <- "none"
-colnames(data_wide6)
+data_wide5[,65:82][is.na(data_wide5[,65:82])] <- 0
+data_wide5[,59:64][is.na(data_wide5[,59:64])] <- "none"
+
 data_wide5 %>% group_by(offer_type1) %>% count()
-data_wide6 %>% group_by(offer_type1) %>% count()
+
 data_wide5 %>% group_by(offer_type2) %>% count()
-data_wide6 %>% group_by(offer_type2) %>% count()
+
 period1 %>% group_by(offer_type,offer_num) %>% count() %>% ungroup() %>% mutate(n/sum(n))
 period2 %>% group_by(offer_type,offer_num) %>% count() %>% ungroup() %>% mutate(n/sum(n))
 period3 %>% group_by(offer_type,offer_num) %>% count() %>% ungroup() %>% mutate(n/sum(n))
@@ -177,9 +177,9 @@ period4 %>% group_by(offer_type,offer_num) %>% count() %>% ungroup() %>% mutate(
 period5 %>% group_by(offer_type,offer_num) %>% count() %>% ungroup() %>% mutate(n/sum(n))
 period6 %>% group_by(offer_type,offer_num) %>% count() %>% ungroup() %>% mutate(n/sum(n))
 
-data_wide6 %>% filter(offer_type1!="bogo" & offer_type2!="bogo" & offer_type3!="bogo" & offer_type4!="bogo" & offer_type5!="bogo" & offer_type6!="bogo") %>% 
+data_wide5 %>% filter(offer_type1!="bogo" & offer_type2!="bogo" & offer_type3!="bogo" & offer_type4!="bogo" & offer_type5!="bogo" & offer_type6!="bogo") %>% 
   count()
-data_wide6 %>% filter(offer_type1!="discount" & offer_type2!="discount" & offer_type3!="discount" & offer_type4!="discount" & offer_type5!="discount" & offer_type6!="discount") %>% 
+data_wide5 %>% filter(offer_type1!="discount" & offer_type2!="discount" & offer_type3!="discount" & offer_type4!="discount" & offer_type5!="discount" & offer_type6!="discount") %>% 
   count()
 
 
