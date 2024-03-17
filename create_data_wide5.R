@@ -75,21 +75,43 @@ trans_per_cust <- function(X){
     
 }
 
+
+
 offer_type<-function(X){
   for(i in 1:dim(X)[1]){
-    if(X$offer_num[i] %in% c("offer1", "offer2", "offer4", "offer9")){
+    if(is.na(X$offer_num[i])){
+      X$offer_type[i]<-"none"
+    }
+    else if(X$offer_num[i] %in% c("offer1", "offer2", "offer4", "offer9")){
       X$offer_type[i]<-"bogo"
     }
-    if(period1$offer_num[i] %in% c("offer5", "offer6", "offer7", "offer10")){
+    else if(period1$offer_num[i] %in% c("offer5", "offer6", "offer7", "offer10")){
       X$offer_type[i]<-"discount"
     }
-    if(period1$offer_num[i] %in% c("offer3", "offer8")){
+    else if(period1$offer_num[i] %in% c("offer3", "offer8")){
       X$offer_type[i]<-"informational"
     }
   }
   return(X)
 }
 
+offer_type<-function(X){
+  for(i in 1:dim(X)[1]){
+    if(is.na(X$offer_num[i])){
+      X$offer_type[i]<-"none"
+    }
+    else if(X$offer_num[i] %in% c("offer1", "offer2", "offer4", "offer9")){
+      X$offer_type[i]<-"bogo"
+    }
+    else if(X$offer_num[i] %in% c("offer5", "offer6", "offer7", "offer10")){
+      X$offer_type[i]<-"discount"
+    }
+    else if(X$offer_num[i] %in% c("offer3", "offer8")){
+      X$offer_type[i]<-"informational"
+    }
+  }
+  return(X)
+}
 
 
 p1_trans<-trans_per_cust(period1) %>% rename(num_trans1=num_trans,tot_amount1=tot_amount, ave_amount1=ave_amount)
@@ -105,6 +127,9 @@ period3<-offer_type(period3)
 period4<-offer_type(period4)
 period5<-offer_type(period5)
 period6<-offer_type(period6)
+
+
+period1
 
 off_rec1<-period1 %>% filter(offer_received==1) %>% select(person_id, offer_type) %>% rename(offer_type1=offer_type)
 off_rec2<-period2 %>% filter(offer_received==1) %>% select(person_id, offer_type) %>% rename(offer_type2=offer_type)
@@ -128,12 +153,35 @@ data_wide5 <- left_join(data_wide5, p5_trans, by="person_id")
 data_wide5 <- left_join(data_wide5, p6_trans, by="person_id") 
 data_wide5
 
+data_wide5 %>% filter(offer_type1!="bogo" & offer_type2!="bogo" & offer_type3!="bogo" & offer_type4!="bogo" & offer_type5!="bogo" & offer_type6!="bogo") %>% 
+  count()
+data_wide5 %>% filter(offer_type1!="discount" & offer_type2!="discount" & offer_type3!="discount" & offer_type4!="discount" & offer_type5!="discount" & offer_type6!="discount") %>% 
+  count()
 
+colnames(data_wide)
+  
+
+data_wide6<-data_wide5
 dim(data_wide5)
-data_wide5[,65:82][is.na(data_wide5[,65:82])] <- 0
-data_wide5[,59:64][is.na(data_wide5[,59:64])] <- "none"
-colnames(data_wide5)
-data_wide5
+data_wide6[,65:82][is.na(data_wide6[,65:82])] <- 0
+data_wide6[,59:64][is.na(data_wide6[,59:64])] <- "none"
+colnames(data_wide6)
+data_wide5 %>% group_by(offer_type1) %>% count()
+data_wide6 %>% group_by(offer_type1) %>% count()
+data_wide5 %>% group_by(offer_type2) %>% count()
+data_wide6 %>% group_by(offer_type2) %>% count()
+period1 %>% group_by(offer_type,offer_num) %>% count() %>% ungroup() %>% mutate(n/sum(n))
+period2 %>% group_by(offer_type,offer_num) %>% count() %>% ungroup() %>% mutate(n/sum(n))
+period3 %>% group_by(offer_type,offer_num) %>% count() %>% ungroup() %>% mutate(n/sum(n))
+period4 %>% group_by(offer_type,offer_num) %>% count() %>% ungroup() %>% mutate(n/sum(n))
+period5 %>% group_by(offer_type,offer_num) %>% count() %>% ungroup() %>% mutate(n/sum(n))
+period6 %>% group_by(offer_type,offer_num) %>% count() %>% ungroup() %>% mutate(n/sum(n))
+
+data_wide6 %>% filter(offer_type1!="bogo" & offer_type2!="bogo" & offer_type3!="bogo" & offer_type4!="bogo" & offer_type5!="bogo" & offer_type6!="bogo") %>% 
+  count()
+data_wide6 %>% filter(offer_type1!="discount" & offer_type2!="discount" & offer_type3!="discount" & offer_type4!="discount" & offer_type5!="discount" & offer_type6!="discount") %>% 
+  count()
+
 
 data_wide5<-data_wide5 %>% select(-view_to_completion_rate)
 colnames(data_wide5)
