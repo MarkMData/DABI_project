@@ -15,6 +15,7 @@ library(fdm2id)
 library(scales)
 library(flexclust)
 library(skimr)
+library(gridExtra)
 
 data_wide5 <- read_csv("data_wide5.csv")
 
@@ -97,7 +98,7 @@ test_stand <- test_clust %>%
 ## CLUSTERING
 ################################################################################
 
-kmeans4 <- KMEANS(train_stand, k = 4,iter.max = 100, nstart = 100)
+kmeans4 <- KMEANS(train_stand, k = 4,iter.max = 1000, nstart = 100)
 test_clusters <- predict(kmeans4, newdata = test_stand)
 
 train_df <- data_train %>% mutate(Cluster4 = as.factor( kmeans4$cluster))
@@ -321,3 +322,211 @@ ggplot(test_df, aes(x = f_score, y = m_score, color = Cluster4)) +
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+# load transcript and portfolio data
+transcript2<-read.csv("transcript2.csv")
+portfolio<-read.csv("portfolio2.csv")
+clust_train<-train_df %>% select(person_id, Cluster4)
+clust_test<-test_df %>% select(person_id, Cluster4)
+
+# merge train and test data
+train_transcript<- merge(transcript2, clust_train, by="person_id")
+test_transcript<- merge(transcript2, clust_test, by="person_id")
+
+
+# percentage offer completed on train data with difficulty and reward data
+offer_diff_train<-train_transcript %>% 
+  group_by(Cluster4, offer_num) %>% 
+  summarise(off_comp= sum(offer_completed), off_rec=sum(offer_received)) %>% 
+  ungroup() %>% 
+  mutate(perc_off_comp=off_comp/off_rec)
+
+# merge with portfolio and remove informational offers
+offer_diff_train<-merge(offer_diff_train, portfolio %>% select(difficulty, reward_off, offer_num),by="offer_num")
+offer_diff_train<- offer_diff_train %>% filter(reward_off!=0)
+
+# change offer_number to bogo or discount
+for(i in 1:dim(offer_diff_train)[1]){
+  if(offer_diff_train$offer_num[i]=="offer1"){
+    offer_diff_train$offer_num[i]<-"bogo1"
+  }
+  else if(offer_diff_train$offer_num[i]=="offer2"){
+    offer_diff_train$offer_num[i]<-"bogo2"
+  }
+  else if(offer_diff_train$offer_num[i]=="offer4"){
+    offer_diff_train$offer_num[i]<-"bogo3"
+  }
+  else if(offer_diff_train$offer_num[i]=="offer5"){
+    offer_diff_train$offer_num[i]<-"discount1"
+  }
+  else if(offer_diff_train$offer_num[i]=="offer6"){
+    offer_diff_train$offer_num[i]<-"discount2"
+  }
+  else if(offer_diff_train$offer_num[i]=="offer7"){
+    offer_diff_train$offer_num[i]<-"discount3"
+  }
+  else if(offer_diff_train$offer_num[i]=="offer9"){
+    offer_diff_train$offer_num[i]<-"bogo4"
+  }
+  else if(offer_diff_train$offer_num[i]=="offer10"){
+    offer_diff_train$offer_num[i]<-"discount4"
+  }
+}
+
+# plot interactions with offers and cluster
+p1<-ggplot(offer_diff_train %>% filter(Cluster4==1), aes(offer_num,perc_off_comp))+
+  geom_bar(stat = "identity",aes(fill=factor(difficulty)))+
+  ylim(c(0,1))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  xlab("")+
+  ggtitle("Cluster 1 interaction with offers")+
+  ylab("Percentage of Offers Completed")+
+  theme(legend.position="none",axis.text.x = element_blank())
+
+p2<-ggplot(offer_diff_train %>% filter(Cluster4==2), aes(offer_num,perc_off_comp))+
+  geom_bar(stat = "identity",aes(fill=factor(difficulty)))+
+  ylim(c(0,1))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  xlab("")+
+  ggtitle("Cluster 2 interaction with offers")+
+  ylab("")+
+  theme(legend.position = c(0.9, 0.8),axis.text.x = element_blank(),axis.text.y = element_blank())+
+  guides(fill=guide_legend(title="Difficulty"))
+
+p3<-ggplot(offer_diff_train %>% filter(Cluster4==3), aes(offer_num,perc_off_comp))+
+  geom_bar(stat = "identity",aes(fill=factor(difficulty)))+
+  ylim(c(0,1))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  xlab("")+
+  ggtitle("Cluster 3 interaction with offers")+
+  ylab("Percentage of Offers Completed")+
+  theme(legend.position="none")
+
+p4<-ggplot(offer_diff_train %>% filter(Cluster4==4), aes(offer_num,perc_off_comp))+
+  geom_bar(stat = "identity",aes(fill=factor(difficulty)))+
+  ylim(c(0,1))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),axis.text.y = element_blank() )+
+  xlab("")+
+  ggtitle("Cluster 4 interaction with offers")+
+  ylab("")+
+  theme(legend.position="none")
+
+grid.arrange(p1,p2,p3,p4)
+
+
+# percentage offer completed on test data with difficulty and reward data
+offer_diff_test<-test_transcript %>% 
+  group_by(Cluster4, offer_num) %>% 
+  summarise(off_comp= sum(offer_completed), off_rec=sum(offer_received)) %>% 
+  ungroup() %>% 
+  mutate(perc_off_comp=off_comp/off_rec)
+
+# merge test and portfolio
+offer_diff_test<-merge(offer_diff_test, portfolio %>% select(difficulty, reward_off, offer_num),by="offer_num")
+offer_diff_test<- offer_diff_test %>% filter(reward_off!=0)
+
+# change offer number to bogo or discount
+for(i in 1:dim(offer_diff_test)[1]){
+  if(offer_diff_test$offer_num[i]=="offer1"){
+    offer_diff_test$offer_num[i]<-"bogo1"
+  }
+  else if(offer_diff_test$offer_num[i]=="offer2"){
+    offer_diff_test$offer_num[i]<-"bogo2"
+  }
+  else if(offer_diff_test$offer_num[i]=="offer4"){
+    offer_diff_test$offer_num[i]<-"bogo3"
+  }
+  else if(offer_diff_test$offer_num[i]=="offer5"){
+    offer_diff_test$offer_num[i]<-"discount1"
+  }
+  else if(offer_diff_test$offer_num[i]=="offer6"){
+    offer_diff_test$offer_num[i]<-"discount2"
+  }
+  else if(offer_diff_test$offer_num[i]=="offer7"){
+    offer_diff_test$offer_num[i]<-"discount3"
+  }
+  else if(offer_diff_test$offer_num[i]=="offer9"){
+    offer_diff_test$offer_num[i]<-"bogo4"
+  }
+  else if(offer_diff_test$offer_num[i]=="offer10"){
+    offer_diff_test$offer_num[i]<-"discount4"
+  }
+}
+
+# plot interaction with offers and discount
+
+p5<-ggplot(offer_diff_test %>% filter(Cluster4==1), aes(offer_num,perc_off_comp))+
+  geom_bar(stat = "identity",aes(fill=factor(difficulty)))+
+  ylim(c(0,1))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  xlab("")+
+  ggtitle("Cluster 1 interaction with offers")+
+  ylab("Percentage of Offers Completed")+
+  theme(legend.position="none",axis.text.x = element_blank())
+
+p6<-ggplot(offer_diff_test %>% filter(Cluster4==2), aes(offer_num,perc_off_comp))+
+  geom_bar(stat = "identity",aes(fill=factor(difficulty)))+
+  ylim(c(0,1))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  xlab("")+
+  ggtitle("Cluster 2 interaction with offers")+
+  ylab("")+
+  theme(legend.position = c(0.9, 0.8),axis.text.x = element_blank(),axis.text.y = element_blank())+
+  guides(fill=guide_legend(title="Difficulty"))
+
+p7<-ggplot(offer_diff_test %>% filter(Cluster4==3), aes(offer_num,perc_off_comp))+
+  geom_bar(stat = "identity",aes(fill=factor(difficulty)))+
+  ylim(c(0,1))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  xlab("")+
+  ggtitle("Cluster 3 interaction with offers")+
+  ylab("Percentage of Offers Completed")+
+  theme(legend.position="none")
+
+p8<-ggplot(offer_diff_test %>% filter(Cluster4==4), aes(offer_num,perc_off_comp))+
+  geom_bar(stat = "identity",aes(fill=factor(difficulty)))+
+  ylim(c(0,1))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),axis.text.y = element_blank() )+
+  xlab("")+
+  ggtitle("Cluster 4 interaction with offers")+
+  ylab("")+
+  theme(legend.position="none")
+
+grid.arrange(p5,p6,p7,p8)
+
+
+#######################################################
+# how each cluster reacts with viewing and completing bogo and discount offers
+train_df %>% group_by(Cluster4) %>% 
+  summarise(bogo_comp=mean(bogo_response_rate, na.rm = TRUE), bogo_view=mean(bogo_view_rate, na.rm=TRUE), disc_comp=mean(disc_response_rate, na.rm=TRUE),disc_view=mean(disc_view_rate, na.rm=TRUE))
+
+# group by cluster and offer type to see how transactions and amount vary with offers
+period1<-train_df %>% group_by(Cluster4, offer_type1) %>% summarise(mean(num_trans1), mean(tot_amount1), mean(ave_amount1), sqrt(var(tot_amount1)),sqrt(var(ave_amount1)))
+period2<-train_df %>% group_by(Cluster4, offer_type2) %>% summarise(mean(num_trans2), mean(tot_amount2), mean(ave_amount2),sqrt(var(tot_amount2)), sqrt(var(ave_amount2))) 
+period3<-train_df %>% group_by(Cluster4, offer_type3) %>% summarise(mean(num_trans3), mean(tot_amount3), mean(ave_amount3),sqrt(var(tot_amount3)), sqrt(var(ave_amount3)))
+period4<-train_df %>% group_by(Cluster4, offer_type4) %>% summarise(mean(num_trans4), mean(tot_amount4), mean(ave_amount4),sqrt(var(tot_amount4)), sqrt(var(ave_amount4))) 
+period5<-train_df %>% group_by(Cluster4, offer_type5) %>% summarise(mean(num_trans5), mean(tot_amount5), mean(ave_amount5),sqrt(var(tot_amount5)), sqrt(var(ave_amount5)))
+period6<-train_df %>% group_by(Cluster4, offer_type6) %>% summarise(mean(num_trans6), mean(tot_amount6), mean(ave_amount6),sqrt(var(tot_amount6)), sqrt(var(ave_amount6)))
+
+# group to see how they vary throughout all transactions
+total_offer_behaviour<- data.frame(period1$Cluster4, period1$offer_type1, period1[,3:5]+period2[,3:5]+period3[,3:5]+period4[,3:5]+period5[,3:5]+period6[,3:5])
+
+colnames(total_offer_behaviour) <-c("cluster","offer_type","transactions","tot_amount", "ave_amount")
+total_offer_behaviour %>% group_by(cluster) %>% mutate(perc_trans=transactions/sum(transactions),perc_tot_amount=tot_amount/sum(tot_amount)) %>% print(n=Inf)
+
+
+# repeat for test data
+test_df %>% group_by(Cluster4) %>% 
+  summarise(bogo_comp=mean(bogo_response_rate, na.rm = TRUE), bogo_view=mean(bogo_view_rate, na.rm=TRUE), disc_comp=mean(disc_response_rate, na.rm=TRUE),disc_view=mean(disc_view_rate, na.rm=TRUE))
+
+period1_test<-train_df %>% group_by(Cluster4, offer_type1) %>% summarise(mean(num_trans1), mean(tot_amount1), mean(ave_amount1), sqrt(var(tot_amount1)),sqrt(var(ave_amount1))) 
+period2_test<-train_df %>% group_by(Cluster4, offer_type2) %>% summarise(mean(num_trans2), mean(tot_amount2), mean(ave_amount2), sqrt(var(tot_amount1)),sqrt(var(ave_amount1))) 
+period3_test<-train_df %>% group_by(Cluster4, offer_type3) %>% summarise(mean(num_trans3), mean(tot_amount3), mean(ave_amount3), sqrt(var(tot_amount1)),sqrt(var(ave_amount1)))
+period4_test<-train_df %>% group_by(Cluster4, offer_type4) %>% summarise(mean(num_trans4), mean(tot_amount4), mean(ave_amount4), sqrt(var(tot_amount1)),sqrt(var(ave_amount1))) 
+period5_test<-train_df %>% group_by(Cluster4, offer_type5) %>% summarise(mean(num_trans5), mean(tot_amount5), mean(ave_amount5), sqrt(var(tot_amount1)),sqrt(var(ave_amount1)))
+period6_test<-train_df %>% group_by(Cluster4, offer_type6) %>% summarise(mean(num_trans6), mean(tot_amount6), mean(ave_amount6), sqrt(var(tot_amount1)),sqrt(var(ave_amount1)))
+
+
+total_offer_behaviour_test<- data.frame(period1_test$Cluster4, period1_test$offer_type1, period1_test[,3:5]+period2_test[,3:5]+period3_test[,3:5]+period4_test[,3:5]+period5_test[,3:5]+period6_test[,3:5])
+
+colnames(total_offer_behaviour_test) <-c("cluster","offer_type","transactions","tot_amount", "ave_amount")
+total_offer_behaviour_test %>% group_by(cluster) %>% mutate(perc_trans=transactions/sum(transactions),perc_tot_amount=tot_amount/sum(tot_amount)) %>% print(n=Inf)
