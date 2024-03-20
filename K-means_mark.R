@@ -494,3 +494,39 @@ p8<-ggplot(offer_diff_test %>% filter(Cluster4==4), aes(offer_num,perc_off_comp)
 grid.arrange(p5,p6,p7,p8)
 
 
+#######################################################
+# how each cluster reacts with viewing and completing bogo and discount offers
+train_df %>% group_by(Cluster4) %>% 
+  summarise(bogo_comp=mean(bogo_response_rate, na.rm = TRUE), bogo_view=mean(bogo_view_rate, na.rm=TRUE), disc_comp=mean(disc_response_rate, na.rm=TRUE),disc_view=mean(disc_view_rate, na.rm=TRUE))
+
+# group by cluster and offer type to see how transactions and amount vary with offers
+period1<-train_df %>% group_by(Cluster4, offer_type1) %>% summarise(mean(num_trans1), mean(tot_amount1), mean(ave_amount1), sqrt(var(tot_amount1)),sqrt(var(ave_amount1)))
+period2<-train_df %>% group_by(Cluster4, offer_type2) %>% summarise(mean(num_trans2), mean(tot_amount2), mean(ave_amount2),sqrt(var(tot_amount2)), sqrt(var(ave_amount2))) 
+period3<-train_df %>% group_by(Cluster4, offer_type3) %>% summarise(mean(num_trans3), mean(tot_amount3), mean(ave_amount3),sqrt(var(tot_amount3)), sqrt(var(ave_amount3)))
+period4<-train_df %>% group_by(Cluster4, offer_type4) %>% summarise(mean(num_trans4), mean(tot_amount4), mean(ave_amount4),sqrt(var(tot_amount4)), sqrt(var(ave_amount4))) 
+period5<-train_df %>% group_by(Cluster4, offer_type5) %>% summarise(mean(num_trans5), mean(tot_amount5), mean(ave_amount5),sqrt(var(tot_amount5)), sqrt(var(ave_amount5)))
+period6<-train_df %>% group_by(Cluster4, offer_type6) %>% summarise(mean(num_trans6), mean(tot_amount6), mean(ave_amount6),sqrt(var(tot_amount6)), sqrt(var(ave_amount6)))
+
+# group to see how they vary throughout all transactions
+total_offer_behaviour<- data.frame(period1$Cluster4, period1$offer_type1, period1[,3:5]+period2[,3:5]+period3[,3:5]+period4[,3:5]+period5[,3:5]+period6[,3:5])
+
+colnames(total_offer_behaviour) <-c("cluster","offer_type","transactions","tot_amount", "ave_amount")
+total_offer_behaviour %>% group_by(cluster) %>% mutate(perc_trans=transactions/sum(transactions),perc_tot_amount=tot_amount/sum(tot_amount)) %>% print(n=Inf)
+
+
+# repeat for test data
+test_df %>% group_by(Cluster4) %>% 
+  summarise(bogo_comp=mean(bogo_response_rate, na.rm = TRUE), bogo_view=mean(bogo_view_rate, na.rm=TRUE), disc_comp=mean(disc_response_rate, na.rm=TRUE),disc_view=mean(disc_view_rate, na.rm=TRUE))
+
+period1_test<-train_df %>% group_by(Cluster4, offer_type1) %>% summarise(mean(num_trans1), mean(tot_amount1), mean(ave_amount1), sqrt(var(tot_amount1)),sqrt(var(ave_amount1))) 
+period2_test<-train_df %>% group_by(Cluster4, offer_type2) %>% summarise(mean(num_trans2), mean(tot_amount2), mean(ave_amount2), sqrt(var(tot_amount1)),sqrt(var(ave_amount1))) 
+period3_test<-train_df %>% group_by(Cluster4, offer_type3) %>% summarise(mean(num_trans3), mean(tot_amount3), mean(ave_amount3), sqrt(var(tot_amount1)),sqrt(var(ave_amount1)))
+period4_test<-train_df %>% group_by(Cluster4, offer_type4) %>% summarise(mean(num_trans4), mean(tot_amount4), mean(ave_amount4), sqrt(var(tot_amount1)),sqrt(var(ave_amount1))) 
+period5_test<-train_df %>% group_by(Cluster4, offer_type5) %>% summarise(mean(num_trans5), mean(tot_amount5), mean(ave_amount5), sqrt(var(tot_amount1)),sqrt(var(ave_amount1)))
+period6_test<-train_df %>% group_by(Cluster4, offer_type6) %>% summarise(mean(num_trans6), mean(tot_amount6), mean(ave_amount6), sqrt(var(tot_amount1)),sqrt(var(ave_amount1)))
+
+
+total_offer_behaviour_test<- data.frame(period1_test$Cluster4, period1_test$offer_type1, period1_test[,3:5]+period2_test[,3:5]+period3_test[,3:5]+period4_test[,3:5]+period5_test[,3:5]+period6_test[,3:5])
+
+colnames(total_offer_behaviour_test) <-c("cluster","offer_type","transactions","tot_amount", "ave_amount")
+total_offer_behaviour_test %>% group_by(cluster) %>% mutate(perc_trans=transactions/sum(transactions),perc_tot_amount=tot_amount/sum(tot_amount)) %>% print(n=Inf)
