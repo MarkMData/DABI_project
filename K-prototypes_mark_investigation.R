@@ -310,28 +310,29 @@ p1<-ggplot(offer_diff_comp %>% filter(Cluster4==1), aes(offer_num,perc_off_comp)
   xlab("")+
   ggtitle("Cluster 1 interaction with offers")+
   ylab("Percentage of Offers Completed")+
-  theme(legend.position="none",axis.text.x = element_blank())
-
-p2<-ggplot(offer_diff_comp %>% filter(Cluster4==2), aes(offer_num,perc_off_comp))+
-  geom_bar(stat = "identity",aes(fill=factor(reward_off)))+
-  ylim(c(0,1))+
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
-  xlab("")+
-  ggtitle("Cluster 2 interaction with offers")+
-  ylab("")+
-  theme(legend.position="none",axis.text.x = element_blank(),axis.text.y = element_blank())+
-  guides(fill=guide_legend(title="Difficulty"))
-
-p3<-ggplot(offer_diff_comp %>% filter(Cluster4==3), aes(offer_num,perc_off_comp))+
-  geom_bar(stat = "identity",aes(fill=factor(reward_off)))+
-  ylim(c(0,1))+
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
-  xlab("")+
-  ggtitle("Cluster 3 interaction with offers")+
+  theme(axis.text.x = element_blank())+
   theme(legend.position = c(0.9, 0.8))+
-  ylab("Percentage of Offers Completed")+
   guides(fill=guide_legend(title="Reward"))
 
+p2<-ggplot(offer_diff_comp %>% filter(Cluster4==2), aes(offer_num,perc_off_comp))+
+  geom_bar(stat = "identity",aes(fill=factor(reward_off)))+
+  ylim(c(0,1))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  xlab("")+
+  ggtitle("Cluster 2 interaction with offers")+
+  ylab("")+
+  theme(legend.position="none",axis.text.x = element_blank(),axis.text.y = element_blank())+
+  guides(fill=guide_legend(title="Difficulty"))
+
+p3<-ggplot(offer_diff_comp %>% filter(Cluster4==3), aes(offer_num,perc_off_comp))+
+  geom_bar(stat = "identity",aes(fill=factor(reward_off)))+
+  ylim(c(0,1))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  xlab("")+
+  ggtitle("Cluster 3 interaction with offers")+
+  theme(legend.position="none")+
+  ylab("Percentage of Offers Completed")
+
 p4<-ggplot(offer_diff_comp %>% filter(Cluster4==4), aes(offer_num,perc_off_comp))+
   geom_bar(stat = "identity",aes(fill=factor(reward_off)))+
   ylim(c(0,1))+
@@ -347,11 +348,12 @@ grid.arrange(p1,p2,p3,p4)
 p1<-ggplot(offer_diff_comp %>% filter(Cluster4==1), aes(offer_num,perc_off_comp))+
   geom_bar(stat = "identity",aes(fill=factor(difficulty)))+
   ylim(c(0,1))+
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  theme(legend.position="none",axis.text.x = element_blank())+
   xlab("")+
   ggtitle("Cluster 1 interaction with offers")+
   ylab("Percentage of Offers Completed")+
-  theme(legend.position="none",axis.text.x = element_blank())
+  theme(legend.position = c(0.9, 0.8))+
+  guides(fill=guide_legend(title="Difficulty"))
 
 p2<-ggplot(offer_diff_comp %>% filter(Cluster4==2), aes(offer_num,perc_off_comp))+
   geom_bar(stat = "identity",aes(fill=factor(difficulty)))+
@@ -370,8 +372,7 @@ p3<-ggplot(offer_diff_comp %>% filter(Cluster4==3), aes(offer_num,perc_off_comp)
   xlab("")+
   ggtitle("Cluster 3 interaction with offers")+
   ylab("Percentage of Offers Completed")+
-  theme(legend.position = c(0.9, 0.8))+
-  guides(fill=guide_legend(title="Difficulty"))
+  theme(legend.position="none")
 
 p4<-ggplot(offer_diff_comp %>% filter(Cluster4==4), aes(offer_num,perc_off_comp))+
   geom_bar(stat = "identity",aes(fill=factor(difficulty)))+
@@ -389,11 +390,12 @@ grid.arrange(p1,p2,p3,p4)
 p1<-ggplot(offer_diff_comp %>% filter(Cluster4==1), aes(offer_num,perc_off_comp))+
   geom_bar(stat = "identity",aes(fill=factor(duration)))+
   ylim(c(0,1))+
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
   xlab("")+
   ggtitle("Cluster 1 interaction with offers")+
   ylab("Percentage of Offers Completed")+
-  theme(legend.position="none",axis.text.x = element_blank())
+  theme(axis.text.x = element_blank())+
+  theme(legend.position = c(0.9, 0.8))+
+  guides(fill=guide_legend(title="Duration in Hours"))
 
 p2<-ggplot(offer_diff_comp %>% filter(Cluster4==2), aes(offer_num,perc_off_comp))+
   geom_bar(stat = "identity",aes(fill=factor(duration)))+
@@ -412,8 +414,7 @@ p3<-ggplot(offer_diff_comp %>% filter(Cluster4==3), aes(offer_num,perc_off_comp)
   xlab("")+
   ggtitle("Cluster 3 interaction with offers")+
   ylab("Percentage of Offers Completed")+
-  theme(legend.position = c(0.9, 0.8))+
-  guides(fill=guide_legend(title="Duration in Hours"))
+  theme(legend.position="none")
 
 p4<-ggplot(offer_diff_comp %>% filter(Cluster4==4), aes(offer_num,perc_off_comp))+
   geom_bar(stat = "identity",aes(fill=factor(duration)))+
@@ -445,8 +446,14 @@ period6<-complete_df %>% group_by(Cluster4, offer_type6) %>% summarise(mean(num_
 total_offer_behaviour<- data.frame(period1$Cluster4, period1$offer_type1, period1[,3:6]+period2[,3:6]+period3[,3:6]+period4[,3:6]+period5[,3:6]+period6[,3:6])
 
 colnames(total_offer_behaviour) <-c("cluster","offer_type","transactions","tot_amount", "ave_amount","n")
-total_offer_behaviour %>% group_by(cluster) %>% mutate(perc_trans=transactions/sum(transactions),perc_tot_amount=tot_amount/sum(tot_amount)) %>% print(n=Inf)
+total_offer_behaviour<-total_offer_behaviour %>% group_by(cluster) %>% mutate(perc_trans=transactions/sum(transactions),perc_tot_amount=tot_amount/sum(tot_amount)) %>% print(n=Inf)
 
+ggplot(total_offer_behaviour, aes(offer_type,transactions))+
+  geom_point(aes(color=cluster, size=tot_amount))
+
+
+ggplot(total_offer_behaviour, aes(offer_type,tot_amount))+
+  geom_point(aes(color=cluster, size=transactions))
 
 ####################################################
 ##### check how cluster 1 spends####################
@@ -515,12 +522,12 @@ complete_df<- left_join(complete_df, offer_num_df, by="person_id")
 complete_df
 
 # group by cluster and offer type to see how transactions and amount vary with offers
-period1<-complete_df %>% group_by(Cluster4, offer_num1) %>% summarise(mean(num_trans1), mean(tot_amount1), mean(ave_amount1),n(), sqrt(var(tot_amount1)),sqrt(var(ave_amount1)))
-period2<-complete_df %>% group_by(Cluster4, offer_num2) %>% summarise(mean(num_trans2), mean(tot_amount2), mean(ave_amount2),n(),sqrt(var(tot_amount2)), sqrt(var(ave_amount2))) 
-period3<-complete_df %>% group_by(Cluster4, offer_num3) %>% summarise(mean(num_trans3), mean(tot_amount3), mean(ave_amount3),n(),sqrt(var(tot_amount3)), sqrt(var(ave_amount3)))
-period4<-complete_df %>% group_by(Cluster4, offer_num4) %>% summarise(mean(num_trans4), mean(tot_amount4), mean(ave_amount4),n(),sqrt(var(tot_amount4)), sqrt(var(ave_amount4))) 
-period5<-complete_df %>% group_by(Cluster4, offer_num5) %>% summarise(mean(num_trans5), mean(tot_amount5), mean(ave_amount5),n(),sqrt(var(tot_amount5)), sqrt(var(ave_amount5)))
-period6<-complete_df %>% group_by(Cluster4, offer_num6) %>% summarise(mean(num_trans6), mean(tot_amount6), mean(ave_amount6),n(),sqrt(var(tot_amount6)), sqrt(var(ave_amount6)))
+period1<-complete_df %>% group_by(Cluster4, offer_type1) %>% summarise(mean(num_trans1), mean(tot_amount1), mean(ave_amount1),n(), sqrt(var(tot_amount1)),sqrt(var(ave_amount1)))
+period2<-complete_df %>% group_by(Cluster4, offer_type2) %>% summarise(mean(num_trans2), mean(tot_amount2), mean(ave_amount2),n(),sqrt(var(tot_amount2)), sqrt(var(ave_amount2))) 
+period3<-complete_df %>% group_by(Cluster4, offer_type3) %>% summarise(mean(num_trans3), mean(tot_amount3), mean(ave_amount3),n(),sqrt(var(tot_amount3)), sqrt(var(ave_amount3)))
+period4<-complete_df %>% group_by(Cluster4, offer_type4) %>% summarise(mean(num_trans4), mean(tot_amount4), mean(ave_amount4),n(),sqrt(var(tot_amount4)), sqrt(var(ave_amount4))) 
+period5<-complete_df %>% group_by(Cluster4, offer_type5) %>% summarise(mean(num_trans5), mean(tot_amount5), mean(ave_amount5),n(),sqrt(var(tot_amount5)), sqrt(var(ave_amount5)))
+period6<-complete_df %>% group_by(Cluster4, offer_type6) %>% summarise(mean(num_trans6), mean(tot_amount6), mean(ave_amount6),n(),sqrt(var(tot_amount6)), sqrt(var(ave_amount6)))
 
 
 
@@ -528,8 +535,14 @@ period6<-complete_df %>% group_by(Cluster4, offer_num6) %>% summarise(mean(num_t
 total_offer_behaviour<- data.frame(period1$Cluster4, period1$offer_type1, period1[,3:6]+period2[,3:6]+period3[,3:6]+period4[,3:6]+period5[,3:6]+period6[,3:6])
 
 colnames(total_offer_behaviour) <-c("cluster","offer_type","transactions","tot_amount", "ave_amount","n")
-total_offer_behaviour %>% group_by(cluster) %>% mutate(perc_trans=transactions/sum(transactions),perc_tot_amount=tot_amount/sum(tot_amount)) %>% print(n=Inf)
+total_offer_behaviour<- total_offer_behaviour %>% group_by(cluster) %>% mutate(perc_trans=transactions/sum(transactions),perc_tot_amount=tot_amount/sum(tot_amount)) %>% print(n=Inf)
 
+ggplot(total_offer_behaviour, aes(offer_type,transactions))+
+  geom_point(aes(color=cluster, size=tot_amount))
+
+
+ggplot(total_offer_behaviour, aes(offer_type,tot_amount))+
+  geom_point(aes(color=cluster, size=transactions))
 
 
 # # change offer_number to bogo or discount
@@ -755,6 +768,8 @@ for(i in 1:dim(complete_df)[1]){
 }
 colnames(complete_df)
 
+
+
 # group by cluster and offer type to see how transactions and amount vary with offers
 period1<-complete_df %>% group_by(Cluster4, offer_num1) %>% summarise(mean(num_trans1), mean(tot_amount1), mean(ave_amount1),n(), sqrt(var(tot_amount1)),sqrt(var(ave_amount1)))
 period2<-complete_df %>% group_by(Cluster4, offer_num2) %>% summarise(mean(num_trans2), mean(tot_amount2), mean(ave_amount2),n(),sqrt(var(tot_amount2)), sqrt(var(ave_amount2))) 
@@ -764,18 +779,16 @@ period5<-complete_df %>% group_by(Cluster4, offer_num5) %>% summarise(mean(num_t
 period6<-complete_df %>% group_by(Cluster4, offer_num6) %>% summarise(mean(num_trans6), mean(tot_amount6), mean(ave_amount6),n(),sqrt(var(tot_amount6)), sqrt(var(ave_amount6)))
 
 
-
 # group to see how they vary throughout all transactions
 total_offer_behaviour<- data.frame(period1$Cluster4, period1$offer_num1, period1[,3:6]+period2[,3:6]+period3[,3:6]+period4[,3:6]+period5[,3:6]+period6[,3:6])
 
 colnames(total_offer_behaviour) <-c("cluster","offer_num","transactions","tot_amount", "ave_amount","n")
-total_offer_behaviour %>% group_by(cluster) %>% mutate(perc_trans=transactions/sum(transactions),perc_tot_amount=tot_amount/sum(tot_amount)) %>% print(n=Inf)
+total_offer_behaviour<-total_offer_behaviour %>% group_by(cluster) %>% mutate(perc_trans=transactions/sum(transactions),perc_tot_amount=tot_amount/sum(tot_amount)) 
+ggplot(total_offer_behaviour, aes(offer_num,transactions))+
+  geom_point(aes(color=cluster, size=tot_amount))
 
 
-complete_df %>% group_by(offer_num1) %>% count()
-complete_df %>% group_by(offer_num2) %>% count()
-complete_df %>% group_by(offer_num6) %>% count()
+ggplot(total_offer_behaviour, aes(offer_num,tot_amount))+
+  geom_point(aes(color=cluster, size=transactions))
 
 
-comp_transcript %>%  filter(time<168) %>% group_by(Cluster4) %>% summarise(max(amount))
-comp_transcript %>%  filter(Cluster4==1) %>% arrange(desc(amount))
