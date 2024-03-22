@@ -30,6 +30,11 @@ summary(lm(bogo_rec ~ income, data = data1))
 summary(lm(disc_rec ~ income, data = data1))
 summary(lm(info_rec ~ income, data = data1))
 
+# Looking at sig of income at offers rec
+summary(lm(tot_off_rec ~ tenure, data = data1))
+summary(lm(bogo_rec ~ tenure, data = data1))
+summary(lm(disc_rec ~ tenure, data = data1))
+summary(lm(info_rec ~ tenure, data = data1))
 
 ################################################################################
 # Looking at significance of diffrences in means between clusters
