@@ -1,8 +1,39 @@
 library(tidyverse)
 library(skimr)
+
 # Perform statistical tests for each variable
 data <- read.csv("kproto_complete_data.csv")
 skim(data)
+
+################################################################################
+# Looking at sig of demographics and offers
+################################################################################
+
+# Filtering out other
+data1 <- data |>
+  filter(gender!= 'O')
+# looking at significance of gender on offers rec
+wilcox.test(tot_off_rec ~ gender, data = data1)
+wilcox.test(bogo_rec ~ gender, data = data1)
+wilcox.test(disc_rec ~ gender, data = data1)
+wilcox.test(info_rec ~ gender, data = data1)
+
+# looking at sig of age on offers rec
+summary(lm(tot_off_rec ~ age, data = data1))
+summary(lm(bogo_rec ~ age, data = data1))
+summary(lm(disc_rec ~ age, data = data1))
+summary(lm(info_rec ~ age, data = data1))
+
+# Looking at sig of income at offers rec
+summary(lm(tot_off_rec ~ income, data = data1))
+summary(lm(bogo_rec ~ income, data = data1))
+summary(lm(disc_rec ~ income, data = data1))
+summary(lm(info_rec ~ income, data = data1))
+
+
+################################################################################
+# Looking at significance of diffrences in means between clusters
+################################################################################
 colnames(data[,3:56])
 # Create an empty dataframe to store results
 results_df <- tibble(Variable = character(), P_Value = numeric())
