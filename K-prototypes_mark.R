@@ -17,6 +17,7 @@ library(flexclust)
 library(skimr)
 
 data_wide5 <- read_csv("data_wide5.csv")
+data_wide5<-data_wide5 %>% filter(ave_amount!=max(ave_amount))
 
 my_theme <- function(base_size = 10, base_family = "sans"){
   theme_minimal(base_size = base_size, base_family = base_family) +
