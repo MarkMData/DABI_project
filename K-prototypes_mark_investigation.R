@@ -267,7 +267,7 @@ offer_diff<-comp_transcript %>%
   mutate(perc_off_comp=off_comp/off_rec)
 
 # merge with portfolio and remove informational offers
-offer_diff_comp<-merge(offer_diff, portfolio %>% select(difficulty, reward_off, offer_num),by="offer_num")
+offer_diff_comp<-merge(offer_diff, portfolio %>% select(difficulty, reward_off, duration, offer_num),by="offer_num")
 offer_diff_comp<- offer_diff_comp %>% filter(reward_off!=0)
 
 # change offer_number to bogo or discount
@@ -382,6 +382,48 @@ p4<-ggplot(offer_diff_comp %>% filter(Cluster4==4), aes(offer_num,perc_off_comp)
 
 grid.arrange(p1,p2,p3,p4)
 
+
+# plot interactions with offers and cluster and difficulty
+p1<-ggplot(offer_diff_comp %>% filter(Cluster4==1), aes(offer_num,perc_off_comp))+
+  geom_bar(stat = "identity",aes(fill=factor(duration)))+
+  ylim(c(0,1))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  xlab("")+
+  ggtitle("Cluster 1 interaction with offers")+
+  ylab("Percentage of Offers Completed")+
+  theme(legend.position="none",axis.text.x = element_blank())
+
+p2<-ggplot(offer_diff_comp %>% filter(Cluster4==2), aes(offer_num,perc_off_comp))+
+  geom_bar(stat = "identity",aes(fill=factor(duration)))+
+  ylim(c(0,1))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  xlab("")+
+  ggtitle("Cluster 2 interaction with offers")+
+  ylab("")+
+  theme(legend.position="none",axis.text.x = element_blank(),axis.text.y = element_blank())+
+  guides(fill=guide_legend(title="Duration in Hours"))
+
+p3<-ggplot(offer_diff_comp %>% filter(Cluster4==3), aes(offer_num,perc_off_comp))+
+  geom_bar(stat = "identity",aes(fill=factor(duration)))+
+  ylim(c(0,1))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  xlab("")+
+  ggtitle("Cluster 3 interaction with offers")+
+  ylab("Percentage of Offers Completed")+
+  theme(legend.position = c(0.9, 0.8))+
+  guides(fill=guide_legend(title="Duration in Hours"))
+
+p4<-ggplot(offer_diff_comp %>% filter(Cluster4==4), aes(offer_num,perc_off_comp))+
+  geom_bar(stat = "identity",aes(fill=factor(duration)))+
+  ylim(c(0,1))+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),axis.text.y = element_blank() )+
+  xlab("")+
+  ggtitle("Cluster 4 interaction with offers")+
+  ylab("")+
+  theme(legend.position="none")
+
+grid.arrange(p1,p2,p3,p4)
+
 #######################################################
 # how each cluster reacts with viewing and completing bogo and discount offers
 complete_df %>% group_by(Cluster4) %>% 
@@ -401,5 +443,58 @@ total_offer_behaviour<- data.frame(period1$Cluster4, period1$offer_type1, period
 
 colnames(total_offer_behaviour) <-c("cluster","offer_type","transactions","tot_amount", "ave_amount","n")
 total_offer_behaviour %>% group_by(cluster) %>% mutate(perc_trans=transactions/sum(transactions),perc_tot_amount=tot_amount/sum(tot_amount)) %>% print(n=Inf)
+
+
+####################################################
+##### check how cluster 1 spends####################
+big_spenders<-comp_transcript %>% filter(Cluster4==1)
+
+ggplot(big_spenders, aes(amount))+
+  geom_histogram()
+unique(big_spenders$person_id)[1]
+big_spenders %>% filter(person_id==unique(big_spenders$person_id)[1], amount>0) %>% select(amount)
+big_spenders %>% filter(person_id==unique(big_spenders$person_id)[2], amount>0) %>% select(amount)
+big_spenders %>% filter(person_id==unique(big_spenders$person_id)[3], amount>0) %>% select(amount)
+big_spenders %>% filter(person_id==unique(big_spenders$person_id)[4], amount>0) %>% select(amount)
+big_spenders %>% filter(person_id==unique(big_spenders$person_id)[5], amount>0) %>% select(amount)
+big_spenders %>% filter(person_id==unique(big_spenders$person_id)[6], amount>0) %>% select(amount)
+big_spenders %>% filter(person_id==unique(big_spenders$person_id)[7], amount>0) %>% select(amount)
+big_spenders %>% filter(person_id==unique(big_spenders$person_id)[8], amount>0) %>% select(amount)
+big_spenders %>% filter(person_id==unique(big_spenders$person_id)[9], amount>0) %>% select(amount)
+big_spenders %>% filter(person_id==unique(big_spenders$person_id)[11], amount>0) %>% select(amount)
+big_spenders %>% filter(person_id==unique(big_spenders$person_id)[12], amount>0) %>% select(amount)
+big_spenders %>% filter(person_id==unique(big_spenders$person_id)[13], amount>0) %>% select(amount)
+big_spenders %>% filter(person_id==unique(big_spenders$person_id)[14], amount>0) %>% select(amount)
+big_spenders %>% filter(person_id==unique(big_spenders$person_id)[15], amount>0) %>% select(amount)
+big_spenders %>% filter(person_id==unique(big_spenders$person_id)[16], amount>0) %>% select(amount)
+big_spenders %>% filter(person_id==unique(big_spenders$person_id)[17], amount>0) %>% select(amount)
+big_spenders %>% filter(person_id==unique(big_spenders$person_id)[18], amount>0) %>% select(amount)
+
+big_spenders %>% filter(amount>200) %>% group_by(person_id) %>% count() %>% arrange(desc(n))
+big_spenders %>% filter(amount<100, amount>0) %>% group_by(person_id) %>% summarise(mean_amount=mean(amount), med_amount=median(amount)) %>% ungroup() %>% summarise(mean(mean_amount), mean(med_amount))
+big_spenders %>% filter(amount<100, amount>0) %>% summarise(mean(amount), median(amount))
+big_spenders %>% filter(amount<100, amount>0) %>% ggplot(aes(amount))+geom_histogram()
+
+big_spenders %>% filter(amount<100, amount>0) %>% reframe(quantile(amount, probs=c(0.25,0.75)))
+big_spenders %>% filter(amount>200) %>% reframe(quantile(amount, probs=c(0.25,0.75)))
+max(big_spenders$amount)
+
+################ cluster 2 ##################
+affluent_women<-comp_transcript %>% filter(Cluster4==2)
+affluent_women %>% filter(amount>200) %>% group_by(person_id) %>% count() %>% arrange(desc(n))
+affluent_women %>% filter(amount>200) %>% select(amount) %>% arrange(desc(amount))
+affluent_women %>% filter(amount<100,amount>200) %>% select(amount) %>% arrange(desc(amount))
+max(affluent_women$amount)
+##################cluster 4#####################
+regular_males<-comp_transcript %>% filter(Cluster4==4)
+regular_males %>% filter(amount>200) %>% group_by(person_id) %>% count() %>% arrange(desc(n))
+regular_males %>% filter(amount>200) %>% select(amount) %>% arrange(desc(amount))
+regular_males %>% filter(amount<100,amount>200) %>% select(amount) %>% arrange(desc(amount))
+max(regular_males$amount)
+###################cluster 3####################
+newbie_males<-comp_transcript %>% filter(Cluster4==3)
+newbie_males %>% filter(amount>200) %>% group_by(person_id) %>% count() %>% arrange(desc(n))
+newbie_males %>% filter(amount>200) %>% select(amount) %>% arrange(desc(amount))
+newbie_males %>% filter(amount<100,amount>200) %>% select(amount) %>% arrange(desc(amount))
 
 
