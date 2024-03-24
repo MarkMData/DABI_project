@@ -532,13 +532,23 @@ offer_num_df<-read.csv("offer_received_only.csv")
 complete_df<- left_join(complete_df, offer_num_df, by="person_id")
 complete_df
 
+complete_df %>% filter(is.na(offer_num6) & offer_viewed6==1) %>% group_by(Cluster4, offer_num5) %>% count() %>% print(n=Inf)
+complete_df %>% group_by(Cluster4, offer_num5) %>% count() %>% print(n=Inf)
+complete_df %>% filter(is.na(offer_num5) & offer_viewed5==1) %>% group_by(Cluster4, offer_num4) %>% count() %>% print(n=Inf)
+complete_df %>% filter(is.na(offer_num4) & offer_viewed4==1) %>% group_by(Cluster4, offer_num3) %>% count()%>% print(n=Inf)
+complete_df %>% filter(is.na(offer_num3) & offer_viewed3==1) %>% group_by(Cluster4, offer_num2) %>% count()%>% print(n=Inf)
+complete_df %>% filter(is.na(offer_num2) & offer_viewed2==1) %>% group_by(Cluster4, offer_num1) %>% count()%>% print(n=Inf)
+
+complete_df %>% group_by(Cluster4) %>% count()
+
+
 # group by cluster and offer type to see how transactions and amount vary with offers
 period1<-complete_df %>% group_by(Cluster4, offer_type1) %>% summarise(mean(num_trans1), mean(tot_amount1), mean(ave_amount1),n(), sqrt(var(tot_amount1)),sqrt(var(ave_amount1)))
 period2<-complete_df %>% group_by(Cluster4, offer_type2) %>% summarise(mean(num_trans2), mean(tot_amount2), mean(ave_amount2),n(),sqrt(var(tot_amount2)), sqrt(var(ave_amount2))) 
-period3<-complete_df %>% group_by(Cluster4, offer_type3) %>% summarise(mean(num_trans3), mean(tot_amount3), mean(ave_amount3),n(),sqrt(var(tot_amount3)), sqrt(var(ave_amount3)))
-period4<-complete_df %>% group_by(Cluster4, offer_type4) %>% summarise(mean(num_trans4), mean(tot_amount4), mean(ave_amount4),n(),sqrt(var(tot_amount4)), sqrt(var(ave_amount4))) 
-period5<-complete_df %>% group_by(Cluster4, offer_type5) %>% summarise(mean(num_trans5), mean(tot_amount5), mean(ave_amount5),n(),sqrt(var(tot_amount5)), sqrt(var(ave_amount5)))
-period6<-complete_df %>% group_by(Cluster4, offer_type6) %>% summarise(mean(num_trans6), mean(tot_amount6), mean(ave_amount6),n(),sqrt(var(tot_amount6)), sqrt(var(ave_amount6)))
+period3<-complete_df  %>% group_by(Cluster4, offer_type3) %>% summarise(mean(num_trans3), mean(tot_amount3), mean(ave_amount3),n(),sqrt(var(tot_amount3)), sqrt(var(ave_amount3)))
+period4<-complete_df%>% group_by(Cluster4, offer_type4) %>% summarise(mean(num_trans4), mean(tot_amount4), mean(ave_amount4),n(),sqrt(var(tot_amount4)), sqrt(var(ave_amount4))) 
+period5<-complete_df%>% group_by(Cluster4, offer_type5) %>% summarise(mean(num_trans5), mean(tot_amount5), mean(ave_amount5),n(),sqrt(var(tot_amount5)), sqrt(var(ave_amount5)))
+period6<-complete_df%>% group_by(Cluster4, offer_type6) %>% summarise(mean(num_trans6), mean(tot_amount6), mean(ave_amount6),n(),sqrt(var(tot_amount6)), sqrt(var(ave_amount6)))
 
 
 
@@ -546,6 +556,7 @@ period6<-complete_df %>% group_by(Cluster4, offer_type6) %>% summarise(mean(num_
 total_offer_behaviour<- data.frame(period1$Cluster4, period1$offer_type1, period1[,3:6]+period2[,3:6]+period3[,3:6]+period4[,3:6]+period5[,3:6]+period6[,3:6])
 
 colnames(total_offer_behaviour) <-c("cluster","offer_type","transactions","tot_amount", "ave_amount","n")
+total_offer_behaviour
 total_offer_behaviour<- total_offer_behaviour %>% group_by(cluster) %>% mutate(perc_trans=transactions/sum(transactions),perc_tot_amount=tot_amount/sum(tot_amount)) %>% print(n=Inf)
 
 # plot offer type with transactions and tot amount
@@ -556,7 +567,7 @@ ggplot(total_offer_behaviour, aes(offer_type,transactions))+
 ggplot(total_offer_behaviour, aes(offer_type,tot_amount))+
   geom_point(aes(color=cluster, size=transactions))
 
-
+complete_df
 # # change offer_number to bogo or discount
 for(i in 1:dim(complete_df)[1]){
   if(is.na(complete_df$offer_num1[i])){
@@ -885,3 +896,80 @@ ggplot(all_offer_analysis %>% filter(cluster==4), aes(offer_num,offer_view_rate,
    geom_text(aes())
 
 
+############################################################################################
+# only looking at offers viewed
+dim(complete_df %>% filter(((!is.na(offer_viewed6)) & (offer_num6=="none"))==FALSE))[1]
+dim(complete_df %>% filter(offer_viewed6==1 & offer_num6=="none"))
+dim(complete_df)[1]-357
+dim(complete_df %>% filter(offer_viewed6==1))[1]
+complete_df %>% filter(offer_viewed6==1 & offer_num6!="none") %>% group_by(Cluster4, offer_num6) %>% count() %>% print(n=Inf)
+8944-8587
+
+# group by cluster and offer type to see how transactions and amount vary with offers
+period1<-complete_df %>% filter(offer_viewed1==1 & offer_num1!="none") %>% group_by(Cluster4, offer_num1) %>% summarise(mean(num_trans1), mean(tot_amount1), mean(ave_amount1),n(), sqrt(var(tot_amount1)),sqrt(var(ave_amount1)))
+period2<-complete_df %>% filter(offer_viewed2==1 & offer_num2!="none") %>% group_by(Cluster4, offer_num2) %>% summarise(mean(num_trans2), mean(tot_amount2), mean(ave_amount2),n(),sqrt(var(tot_amount2)), sqrt(var(ave_amount2))) 
+period3<-complete_df %>% filter(offer_viewed3==1 & offer_num3!="none") %>% group_by(Cluster4, offer_num3) %>% summarise(mean(num_trans3), mean(tot_amount3), mean(ave_amount3),n(),sqrt(var(tot_amount3)), sqrt(var(ave_amount3)))
+period4<-complete_df %>% filter(offer_viewed4==1 & offer_num4!="none") %>% group_by(Cluster4, offer_num4) %>% summarise(mean(num_trans4), mean(tot_amount4), mean(ave_amount4),n(),sqrt(var(tot_amount4)), sqrt(var(ave_amount4))) 
+period5<-complete_df %>% filter(offer_viewed5==1 & offer_num5!="none") %>% group_by(Cluster4, offer_num5) %>% summarise(mean(num_trans5), mean(tot_amount5), mean(ave_amount5),n(), sqrt(var(tot_amount5)), sqrt(var(ave_amount5)))
+period6<-complete_df %>% filter(offer_viewed6==1 & offer_num6!="none") %>% group_by(Cluster4, offer_num6) %>% summarise(mean(num_trans6), mean(tot_amount6), mean(ave_amount6),n(), sqrt(var(tot_amount6)), sqrt(var(ave_amount6)))
+
+dim(period1)
+dim(period2)
+dim(period3)
+dim(period4)
+dim(period5)
+dim(period6)
+
+period2 %>% print(n=Inf)
+
+total_offer_behaviour<- data.frame(period1$Cluster4, period1$offer_num1, period1[,3:6]+period2[,3:6]+period3[,3:6]+period4[,3:6]+period5[,3:6]+period6[,3:6])
+total_offer_behaviour<- data.frame(period1$Cluster4, period1$offer_num1, period1[,3:6]+period2[,3:6]+period3[,3:6]+period4[,3:6]+period5[,3:6]+period6[,3:6])
+
+colnames(total_offer_behaviour) <-c("cluster","offer_num","transactions","tot_amount", "ave_amount","n")
+
+ggplot(total_offer_behaviour, aes(offer_num,transactions, label = round(transactions,2)))+
+  geom_point(aes(color=cluster, size=tot_amount))+
+  geom_text()
+
+# plot tot amount vs offers
+ggplot(total_offer_behaviour, aes(offer_num,log(tot_amount), label = round(transactions,2)))+
+  geom_point(aes(color=cluster, size=transactions))+
+  geom_text()
+
+
+
+p1<-ggplot(total_offer_behaviour %>% filter(cluster==1), aes(offer_num,transactions, label = round(transactions,2)))+
+  geom_point(aes(size=tot_amount), col="blue")+
+  geom_text()
+
+p2<-ggplot(total_offer_behaviour %>% filter(cluster==2), aes(offer_num,transactions, label = round(transactions,2)))+
+  geom_point(aes(size=tot_amount), col="yellow")+
+  geom_text()
+
+p3<-ggplot(total_offer_behaviour %>% filter(cluster==3), aes(offer_num,transactions, label = round(transactions,2)))+
+  geom_point(aes(size=tot_amount), col="green")+
+  geom_text()
+
+p4<-ggplot(total_offer_behaviour %>% filter(cluster==4), aes(offer_num,transactions, label = round(transactions,2)))+
+  geom_point(aes(size=tot_amount), col="pink")+
+  geom_text()
+grid.arrange(p1,p2,p3,p4)
+
+
+p5<-ggplot(total_offer_behaviour %>% filter(cluster==1), aes(offer_num,tot_amount, label = round(tot_amount,2)))+
+  geom_point(col="blue", size=3)+
+  geom_text()
+p6<-ggplot(total_offer_behaviour %>% filter(cluster==2), aes(offer_num,tot_amount, label = round(tot_amount,2)))+
+  geom_point(col="yellow", size=3)+
+  geom_text()
+
+p7<-ggplot(total_offer_behaviour %>% filter(cluster==3), aes(offer_num,tot_amount, label = round(tot_amount,2)))+
+  geom_point( col="green", size=3)+
+  geom_text()
+
+p8<-ggplot(total_offer_behaviour %>% filter(cluster==4), aes(offer_num,tot_amount, label = round(tot_amount,2)))+
+  geom_point( col="pink", size=3)+
+  geom_text()
+grid.arrange(p5,p6,p7,p8)
+
+complete_df
