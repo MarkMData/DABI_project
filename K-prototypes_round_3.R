@@ -103,23 +103,24 @@ complete_stand <- complete_data %>%
 ################################################################################
 # Elbow plot
 ################################################################################
-Es <- numeric(7)
+Es <- numeric(10)
 Es
-for(i in 1:7){
+for(i in 1:10){
   kpres <- kproto(train_stand, 
                   k = i, nstart = 25,
                   verbose = FALSE)
   Es[i] <- kpres$tot.withinss}
-elbow_df <- tibble(Clusters = c(1:7), Within_cluster_distance = Es)
+elbow_df <- tibble(Clusters = c(1:10), Within_cluster_distance = Es)
 
 
-ggplot(elbow_df,aes(x = Clusters, y = Within_cluster_distance)) + 
+ggplot(elbow_df,aes(x = Clusters, y = Within_cluster_distance/1000)) + 
   geom_point(size = 3, 
              col ="red3") +
-  geom_path() + 
-  geom_vline(xintercept = 3, 
-             linetype = 2)+
-  scale_x_continuous(breaks = c(1:7))
+  geom_path() +
+  labs(x =  'Number of clusters', y = 'Within cluster distance')+
+  geom_vline(xintercept = 4, 
+                           linetype = 2)+
+  scale_x_continuous(breaks = c(1:10))
 
 
 ################################################################################
