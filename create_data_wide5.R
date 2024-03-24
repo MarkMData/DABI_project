@@ -65,7 +65,24 @@ period4 <- transcript2 |> filter(time >= 408 & time < 504)
 period5 <- transcript2 |> filter(time >= 504 & time < 576)
 period6 <- transcript2 |> filter(time >= 576)
 
+# offer num for each period #
+offnum1<-period1 %>% filter(offer_received==1) %>% select(person_id, offer_num) %>% rename(offer_num1=offer_num)
+offnum2<-period2 %>% filter(offer_received==1) %>% select(person_id, offer_num) %>% rename(offer_num2=offer_num)
+offnum3<-period3 %>% filter(offer_received==1) %>% select(person_id, offer_num) %>% rename(offer_num3=offer_num)
+offnum4<-period4 %>% filter(offer_received==1) %>% select(person_id, offer_num) %>% rename(offer_num4=offer_num)
+offnum5<-period5 %>% filter(offer_received==1) %>% select(person_id, offer_num) %>% rename(offer_num5=offer_num)
+offnum6<-period6 %>% filter(offer_received==1) %>% select(person_id, offer_num) %>% rename(offer_num6=offer_num)
 
+# create a new datafarme with offer num
+period_offer_nums<-full_join(offnum1, offnum2, by="person_id")
+period_offer_nums<-full_join(period_offer_nums, offnum3, by="person_id")
+period_offer_nums<-full_join(period_offer_nums, offnum4, by="person_id")
+period_offer_nums<-full_join(period_offer_nums, offnum5, by="person_id")
+period_offer_nums<-full_join(period_offer_nums, offnum6, by="person_id")
+
+write.csv(period_offer_nums, "offer_received_only.csv")
+
+#make function for summary stats
 trans_per_cust <- function(X){
   X |>
     group_by(person_id) |>
@@ -265,3 +282,4 @@ write.csv(data_wide5, "data_wide5.csv")
 # data_wide5 %>% group_by(cluster3, offer_type4) %>% summarise(mean(num_trans4), mean(tot_amount4), mean(ave_amount4))
 # data_wide5 %>% group_by(cluster3, offer_type5) %>% summarise(mean(num_trans5), mean(tot_amount5), mean(ave_amount5))
 # data_wide5 %>% group_by(cluster3, offer_type6) %>% summarise(mean(num_trans6), mean(tot_amount6), mean(ave_amount6))
+
