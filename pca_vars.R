@@ -8,7 +8,7 @@ library(factoextra)
 
 
 
-data <- read.csv('data_wide5.1.csv')
+data <- read.csv('data_wide5.csv')
 skim(data)
 
 # Selecting variables
