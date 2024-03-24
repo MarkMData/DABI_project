@@ -533,7 +533,6 @@ complete_df<- left_join(complete_df, offer_num_df, by="person_id")
 complete_df
 
 complete_df %>% filter(is.na(offer_num6) & offer_viewed6==1) %>% group_by(Cluster4, offer_num5) %>% count() %>% print(n=Inf)
-complete_df %>% group_by(Cluster4, offer_num5) %>% count() %>% print(n=Inf)
 complete_df %>% filter(is.na(offer_num5) & offer_viewed5==1) %>% group_by(Cluster4, offer_num4) %>% count() %>% print(n=Inf)
 complete_df %>% filter(is.na(offer_num4) & offer_viewed4==1) %>% group_by(Cluster4, offer_num3) %>% count()%>% print(n=Inf)
 complete_df %>% filter(is.na(offer_num3) & offer_viewed3==1) %>% group_by(Cluster4, offer_num2) %>% count()%>% print(n=Inf)
@@ -848,6 +847,17 @@ ggplot(total_offer_behaviour, aes(offer_num,offer_view_rate))+
 all_offer_analysis<-full_join(total_offer_behaviour, offer_diff_comp %>% select(-offer_id,-X, -bogo,-discount,-informational), by=join_by(cluster == Cluster4, offer_num == offer_num))
 all_offer_analysis %>% print(n=Inf)
 colnames(all_offer_analysis)
+
+hist(log(all_offer_analysis$offer_view_rate))
+
+all_offer_analysis %>% filter(mobile==1, social==0, web==1) %>% group_by(cluster) %>% summarise(mean(offer_view_rate))
+all_offer_analysis %>% filter(mobile==1, social==1, web==1) %>% group_by(cluster) %>% summarise(mean(offer_view_rate))
+
+all_offer_analysis %>% filter(mobile==1, social==0, web==1) %>% group_by(cluster) %>% summarise(mean(offer_view_rate))
+all_offer_analysis %>% filter(mobile==0, social==0, web==1) %>% group_by(cluster) %>% summarise(mean(offer_view_rate))
+
+all_offer_analysis %>% filter(mobile==1, social==1, web==1) %>% group_by(cluster) %>% summarise(mean(offer_view_rate))
+all_offer_analysis %>% filter(mobile==1, social==1, web==0) %>% group_by(cluster) %>% summarise(mean(offer_view_rate))
 ############################################################
 # plots on how offer views react with different offers
 ggplot(all_offer_analysis, aes(offer_num,offer_view_rate))+
@@ -861,6 +871,9 @@ colnames(all_offer_analysis)
 
 ggplot(all_offer_analysis, aes(offer_num,offer_view_rate))+
   geom_point(aes(color=cluster, shape=factor(mobile)), size=3)
+
+
+
 colnames(all_offer_analysis)
 
 ggplot(all_offer_analysis, aes(offer_num,offer_view_rate))+
