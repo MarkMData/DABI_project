@@ -8,6 +8,28 @@ profile <- read.csv('profile.csv')
 portfolio <- read.csv('portfolio.csv')
 transcript <- read.csv('transcript.csv')
 
+my_theme <- function(base_size = 10, base_family = "sans"){
+  theme_minimal(base_size = base_size, base_family = base_family) +
+    theme(
+      axis.text = element_text(size = 10),
+      axis.text.x = element_text(angle = 0, vjust = 0.5, hjust = 0.5),
+      axis.title = element_text(size = 10),
+      panel.grid.major = element_line(color = "gray"),
+      panel.grid.minor = element_blank(),
+      panel.background = element_rect(fill = "#f7fdff"),
+      strip.background = element_rect(fill = "#001d60", color = "#00113a", size =0.5),
+      strip.text = element_text(face = "bold", size = 10, color = "white"),
+      legend.position = "bottom",
+      legend.justification = "center",
+      legend.background = element_blank(),
+      panel.border = element_rect(color = "grey5", fill = NA, size = 0.5)
+    )
+}
+
+theme_set(my_theme())
+clust_colmap3 = c("#f7286d","#1faae0","#ffbf1f")
+clust_colmap4 = c("#f7286d","#1faae0","#ffbf1f","#98FB98")
+
 ######### Looking at transaction amounts ########
 amounts <- transcript |>
   filter(transaction == 1) |>
